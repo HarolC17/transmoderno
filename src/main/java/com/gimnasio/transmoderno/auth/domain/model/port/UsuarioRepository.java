@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface UsuarioRepository {
     Optional<Usuario> findByCorreo(String correo);
     Usuario save(Usuario usuario);
+    Optional<Usuario> findById(Long id);
     List<Usuario> findAll();
 }

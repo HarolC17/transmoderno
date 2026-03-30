@@ -1,6 +1,7 @@
 package com.gimnasio.transmoderno.auth.infrastructure.entry_points.exception;
 
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
+import com.gimnasio.transmoderno.auth.domain.exception.UsuarioNoEncontradoException;
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,20 @@ public class GlobalExceptionHandler {
             UsuarioYaExisteException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleUsuarioNoEncontrado(
+            UsuarioNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDenied(
+            org.springframework.security.access.AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("mensaje", "No tienes permisos para realizar esta acción"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

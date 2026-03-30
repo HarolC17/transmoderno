@@ -31,6 +31,12 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
+    public Optional<Usuario> findById(Long id) {
+        return usuarioJpaRepository.findById(id)
+                .map(usuarioMapper::toDomain);
+    }
+
+    @Override
     public List<Usuario> findAll() {
         return usuarioJpaRepository.findAll()
                 .stream()

@@ -3,13 +3,8 @@ package com.gimnasio.transmoderno.auth.infrastructure.entry_points;
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
 import com.gimnasio.transmoderno.auth.domain.model.Rol;
 import com.gimnasio.transmoderno.auth.domain.model.Usuario;
-import com.gimnasio.transmoderno.auth.domain.usecase.LoginUseCase;
-import com.gimnasio.transmoderno.auth.domain.usecase.ObtenerUsuariosUseCase;
-import com.gimnasio.transmoderno.auth.domain.usecase.RegistrarUsuarioUseCase;
-import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.LoginRequest;
-import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.LoginResponse;
-import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.RegistroRequest;
-import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.UsuarioResponse;
+import com.gimnasio.transmoderno.auth.domain.usecase.*;
+import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.*;
 import com.gimnasio.transmoderno.auth.infrastructure.security.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +25,9 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
     private final RegistrarUsuarioUseCase registrarUsuarioUseCase;
     private final ObtenerUsuariosUseCase obtenerUsuariosUseCase;
+    private final ActualizarUsuarioUseCase actualizarUsuarioUseCase;
+    private final CambiarContrasenaUseCase cambiarContrasenaUseCase;
+    private final DesactivarUsuarioUseCase desactivarUsuarioUseCase;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
@@ -81,5 +79,46 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(usuarios);
+    }
+
+    @PutMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponse> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ActualizarUsuarioRequest request) {
+
+        Usuario usuarioActualizado = Usuario.builder()
+                .nombre(request.getNombre())
+                .correo(request.getCorreo())
+                .rol(request.getRol())
+                .build();
+
+        Usuario resultado = actualizarUsuarioUseCase.ejecutar(id, usuarioActualizado);
+
+        return ResponseEntity.ok(new UsuarioResponse(
+                resultado.getId(),
+                resultado.getNombre(),
+                resultado.getCorreo(),
+                resultado.getRol(),
+                resultado.getActivo(),
+                resultado.getFechaCreacion()
+        ));
+    }
+
+    @PatchMapping("/usuarios/{id}/contrasena")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> cambiarContrasena(
+            @PathVariable Long id,
+            @Valid @RequestBody CambiarContrasenaRequest request) {
+
+        cambiarContrasenaUseCase.ejecutar(id, passwordEncoder.encode(request.getContrasena()));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> desactivar(@PathVariable Long id) {
+        desactivarUsuarioUseCase.ejecutar(id);
+        return ResponseEntity.ok().build();
     }
 }

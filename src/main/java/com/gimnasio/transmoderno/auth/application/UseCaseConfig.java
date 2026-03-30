@@ -1,9 +1,7 @@
 package com.gimnasio.transmoderno.auth.application;
 
 import com.gimnasio.transmoderno.auth.domain.model.port.UsuarioRepository;
-import com.gimnasio.transmoderno.auth.domain.usecase.LoginUseCase;
-import com.gimnasio.transmoderno.auth.domain.usecase.ObtenerUsuariosUseCase;
-import com.gimnasio.transmoderno.auth.domain.usecase.RegistrarUsuarioUseCase;
+import com.gimnasio.transmoderno.auth.domain.usecase.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,5 +21,20 @@ public class UseCaseConfig {
     @Bean
     public ObtenerUsuariosUseCase obtenerUsuariosUseCase(UsuarioRepository usuarioRepository) {
         return new ObtenerUsuariosUseCase(usuarioRepository);
+    }
+
+    @Bean
+    public ActualizarUsuarioUseCase actualizarUsuarioUseCase(UsuarioRepository usuarioRepository) {
+        return new ActualizarUsuarioUseCase(usuarioRepository);
+    }
+
+    @Bean
+    public CambiarContrasenaUseCase cambiarContrasenaUseCase(UsuarioRepository usuarioRepository) {
+        return new CambiarContrasenaUseCase(usuarioRepository);
+    }
+
+    @Bean
+    public DesactivarUsuarioUseCase desactivarUsuarioUseCase(UsuarioRepository usuarioRepository) {
+        return new DesactivarUsuarioUseCase(usuarioRepository);
     }
 }
