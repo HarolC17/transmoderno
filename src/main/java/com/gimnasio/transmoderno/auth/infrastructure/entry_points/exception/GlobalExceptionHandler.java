@@ -1,6 +1,7 @@
 package com.gimnasio.transmoderno.auth.infrastructure.entry_points.exception;
 
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
+import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,6 +19,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleCredencialesInvalidas(
             CredencialesInvalidasException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioYaExisteException.class)
+    public ResponseEntity<Map<String, String>> handleUsuarioYaExiste(
+            UsuarioYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 

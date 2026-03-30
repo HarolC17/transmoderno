@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.auth.infrastructure.driver_adapters.jpa_repository;
 
+import com.gimnasio.transmoderno.auth.domain.model.Rol;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,10 @@ public class UsuarioData {
 
     @Column(nullable = false)
     private String contrasena;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Rol rol;
 
     @Column(nullable = false)
     private Boolean activo;

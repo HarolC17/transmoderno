@@ -1,16 +1,26 @@
 package com.gimnasio.transmoderno.auth.infrastructure.entry_points;
 
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
+import com.gimnasio.transmoderno.auth.domain.model.Rol;
 import com.gimnasio.transmoderno.auth.domain.model.Usuario;
 import com.gimnasio.transmoderno.auth.domain.usecase.LoginUseCase;
+import com.gimnasio.transmoderno.auth.domain.usecase.ObtenerUsuariosUseCase;
+import com.gimnasio.transmoderno.auth.domain.usecase.RegistrarUsuarioUseCase;
 import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.LoginRequest;
 import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.LoginResponse;
+import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.RegistroRequest;
+import com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto.UsuarioResponse;
 import com.gimnasio.transmoderno.auth.infrastructure.security.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final LoginUseCase loginUseCase;
+    private final RegistrarUsuarioUseCase registrarUsuarioUseCase;
+    private final ObtenerUsuariosUseCase obtenerUsuariosUseCase;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
@@ -29,12 +41,45 @@ public class AuthController {
             throw new CredencialesInvalidasException();
         }
 
-        String token = jwtService.generarToken(usuario.getCorreo(), "ADMIN");
+        String token = jwtService.generarToken(usuario.getCorreo(), usuario.getRol().name());
 
         return ResponseEntity.ok(new LoginResponse(
                 token,
                 usuario.getNombre(),
                 usuario.getCorreo()
         ));
+    }
+
+    @PostMapping("/registro")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> registrar(@Valid @RequestBody RegistroRequest request) {
+        Usuario usuario = Usuario.builder()
+                .nombre(request.getNombre())
+                .correo(request.getCorreo())
+                .contrasena(passwordEncoder.encode(request.getContrasena()))
+                .rol(request.getRol())
+                .build();
+
+        registrarUsuarioUseCase.ejecutar(usuario);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/usuarios")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UsuarioResponse>> obtenerUsuarios() {
+        List<UsuarioResponse> usuarios = obtenerUsuariosUseCase.ejecutar()
+                .stream()
+                .map(u -> new UsuarioResponse(
+                        u.getId(),
+                        u.getNombre(),
+                        u.getCorreo(),
+                        u.getRol(),
+                        u.getActivo(),
+                        u.getFechaCreacion()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(usuarios);
     }
 }

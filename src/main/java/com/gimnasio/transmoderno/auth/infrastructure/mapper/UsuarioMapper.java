@@ -13,6 +13,7 @@ public class UsuarioMapper {
                 .nombre(data.getNombre())
                 .correo(data.getCorreo())
                 .contrasena(data.getContrasena())
+                .rol(data.getRol())
                 .activo(data.getActivo())
                 .fechaCreacion(data.getFechaCreacion())
                 .build();
@@ -24,6 +25,7 @@ public class UsuarioMapper {
                 .nombre(domain.getNombre())
                 .correo(domain.getCorreo())
                 .contrasena(domain.getContrasena())
+                .rol(domain.getRol())
                 .activo(domain.getActivo())
                 .fechaCreacion(domain.getFechaCreacion())
                 .build();

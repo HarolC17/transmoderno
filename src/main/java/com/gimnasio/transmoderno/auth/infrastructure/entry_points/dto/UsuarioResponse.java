@@ -1,18 +1,17 @@
-package com.gimnasio.transmoderno.auth.domain.model;
+package com.gimnasio.transmoderno.auth.infrastructure.entry_points.dto;
 
-import lombok.*;
+import com.gimnasio.transmoderno.auth.domain.model.Rol;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Usuario {
+public class UsuarioResponse {
     private Long id;
     private String nombre;
     private String correo;
-    private String contrasena;
     private Rol rol;
     private Boolean activo;
     private LocalDateTime fechaCreacion;
