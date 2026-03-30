@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class UseCaseConfig {
+public class AuthUseCaseConfig {
 
     @Bean
     public LoginUseCase loginUseCase(UsuarioRepository usuarioRepository) {
