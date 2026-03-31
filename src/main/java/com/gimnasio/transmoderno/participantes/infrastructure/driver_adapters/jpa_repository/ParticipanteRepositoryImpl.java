@@ -4,6 +4,8 @@ import com.gimnasio.transmoderno.participantes.domain.model.Participante;
 import com.gimnasio.transmoderno.participantes.domain.model.port.ParticipanteRepository;
 import com.gimnasio.transmoderno.participantes.infrastructure.mapper.ParticipanteMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,10 +39,17 @@ public class ParticipanteRepositoryImpl implements ParticipanteRepository {
     }
 
     @Override
-    public List<Participante> findAll() {
-        return participanteJpaRepository.findAll()
+    public List<Participante> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return participanteJpaRepository.findAll(pageable)
+                .getContent()
                 .stream()
                 .map(participanteMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public long count() {
+        return participanteJpaRepository.count();
     }
 }

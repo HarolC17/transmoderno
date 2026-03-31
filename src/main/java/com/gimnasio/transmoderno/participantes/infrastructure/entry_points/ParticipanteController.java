@@ -3,6 +3,7 @@ package com.gimnasio.transmoderno.participantes.infrastructure.entry_points;
 import com.gimnasio.transmoderno.participantes.domain.model.Participante;
 import com.gimnasio.transmoderno.participantes.domain.usecase.*;
 import com.gimnasio.transmoderno.participantes.infrastructure.entry_points.dto.*;
+import com.gimnasio.transmoderno.shared.dto.PaginaResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,12 +43,22 @@ public class ParticipanteController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
-    public ResponseEntity<List<ParticipanteResponse>> obtenerTodos() {
-        List<ParticipanteResponse> participantes = obtenerParticipantesUseCase.ejecutar()
-                .stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(participantes);
+    public ResponseEntity<PaginaResponse<ParticipanteResponse>> obtenerTodos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        List<Participante> participantes = obtenerParticipantesUseCase.ejecutar(page, size);
+        long total = obtenerParticipantesUseCase.contarTotal();
+
+        PaginaResponse<ParticipanteResponse> respuesta = new PaginaResponse<>(
+                participantes.stream().map(this::toResponse).collect(Collectors.toList()),
+                page,
+                (int) Math.ceil((double) total / size),
+                total,
+                size
+        );
+
+        return ResponseEntity.ok(respuesta);
     }
 
     @GetMapping("/identificacion/{numero}")

@@ -3,6 +3,9 @@ package com.gimnasio.transmoderno.shared.exception;
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioNoEncontradoException;
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
+import com.gimnasio.transmoderno.inscripciones.domain.exception.InscripcionNoEncontradaException;
+import com.gimnasio.transmoderno.inscripciones.domain.exception.ParticipanteYaInscritoException;
+import com.gimnasio.transmoderno.inscripciones.domain.exception.RutaNoActivaException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteNoEncontradoException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteYaExisteException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaException;
@@ -73,6 +76,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleRutaYaExiste(
             RutaYaExisteException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    //INSCRIPCIONES
+
+    @ExceptionHandler(InscripcionNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleInscripcionNoEncontrada(
+            InscripcionNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipanteYaInscritoException.class)
+    public ResponseEntity<Map<String, String>> handleParticipanteYaInscrito(
+            ParticipanteYaInscritoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(RutaNoActivaException.class)
+    public ResponseEntity<Map<String, String>> handleRutaNoActiva(
+            RutaNoActivaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 

@@ -8,5 +8,6 @@ public interface ParticipanteRepository {
     Participante save(Participante participante);
     Optional<Participante> findByNumeroIdentificacion(String numeroIdentificacion);
     Optional<Participante> findById(Long id);
-    List<Participante> findAll();
+    List<Participante> findAll(int page, int size);
+    long count();
 }

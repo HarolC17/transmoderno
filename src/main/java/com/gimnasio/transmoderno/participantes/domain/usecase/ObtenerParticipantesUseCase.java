@@ -11,7 +11,11 @@ public class ObtenerParticipantesUseCase {
 
     private final ParticipanteRepository participanteRepository;
 
-    public List<Participante> ejecutar() {
-        return participanteRepository.findAll();
+    public List<Participante> ejecutar(int page, int size) {
+        return participanteRepository.findAll(page, size);
+    }
+
+    public long contarTotal() {
+        return participanteRepository.count();
     }
 }
