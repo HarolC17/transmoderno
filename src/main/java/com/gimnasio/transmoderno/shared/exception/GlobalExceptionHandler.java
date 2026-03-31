@@ -5,6 +5,8 @@ import com.gimnasio.transmoderno.auth.domain.exception.UsuarioNoEncontradoExcept
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteNoEncontradoException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteYaExisteException;
+import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaException;
+import com.gimnasio.transmoderno.rutas.domain.exception.RutaYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,6 +19,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    //USUARIOS
 
     @ExceptionHandler(CredencialesInvalidasException.class)
     public ResponseEntity<Map<String, String>> handleCredencialesInvalidas(
@@ -39,6 +43,8 @@ public class GlobalExceptionHandler {
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
+    //PARTICIPANTES
+
     @ExceptionHandler(ParticipanteYaExisteException.class)
     public ResponseEntity<Map<String, String>> handleParticipanteYaExiste(
             ParticipanteYaExisteException ex) {
@@ -50,6 +56,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleParticipanteNoEncontrado(
             ParticipanteNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    //RUTAS
+
+
+    @ExceptionHandler(RutaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleRutaNoEncontrada(
+            RutaNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(RutaYaExisteException.class)
+    public ResponseEntity<Map<String, String>> handleRutaYaExiste(
+            RutaYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
