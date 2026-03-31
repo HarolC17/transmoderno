@@ -10,6 +10,8 @@ import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteNoEn
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteYaExisteException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaYaExisteException;
+import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoActivaException;
+import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoEncontradaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -99,6 +101,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleRutaNoActiva(
             RutaNoActivaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    //SESIONES
+
+    @ExceptionHandler(SesionNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleSesionNoEncontrada(
+            SesionNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(SesionNoActivaException.class)
+    public ResponseEntity<Map<String, String>> handleSesionNoActiva(
+            SesionNoActivaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
