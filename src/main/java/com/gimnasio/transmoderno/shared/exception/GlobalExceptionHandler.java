@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.shared.exception;
 
+import com.gimnasio.transmoderno.alertas.domain.exception.SolicitudAyudaNoEncontradaException;
 import com.gimnasio.transmoderno.asistencia.domain.exception.AsistenciaYaRegistradaException;
 import com.gimnasio.transmoderno.asistencia.domain.exception.ParticipanteNoInscritoException;
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
@@ -182,6 +183,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
+
+    //ALERTAS
+
+    @ExceptionHandler(SolicitudAyudaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleSolicitudAyudaNoEncontrada(
+            SolicitudAyudaNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    //OTRAS
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidacion(
