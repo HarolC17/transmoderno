@@ -14,6 +14,7 @@ import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaExceptio
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaYaExisteException;
 import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoActivaException;
 import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoEncontradaException;
+import com.gimnasio.transmoderno.fichas.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -134,6 +135,50 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParticipanteNoInscritoException.class)
     public ResponseEntity<Map<String, String>> handleParticipanteNoInscrito(
             ParticipanteNoInscritoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    // FICHAS
+
+    @ExceptionHandler(PreguntaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handlePreguntaNoEncontrada(
+            PreguntaNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FichaPreNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleFichaPreNoEncontrada(
+            FichaPreNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FichaPostNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleFichaPostNoEncontrada(
+            FichaPostNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FichaPreYaExisteException.class)
+    public ResponseEntity<Map<String, String>> handleFichaPreYaExiste(
+            FichaPreYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FichaPostYaExisteException.class)
+    public ResponseEntity<Map<String, String>> handleFichaPostYaExiste(
+            FichaPostYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FichaPreNoCompletadaException.class)
+    public ResponseEntity<Map<String, String>> handleFichaPreNoCompletada(
+            FichaPreNoCompletadaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("mensaje", ex.getMessage()));
     }

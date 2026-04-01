@@ -46,6 +46,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/sesiones/activa/**").permitAll()
                         .requestMatchers("/api/asistencia").permitAll()
                         .requestMatchers("/api/asistencia/participante/**").permitAll()
+                        .requestMatchers("/api/fichas/pre").permitAll()
+                        .requestMatchers("/api/fichas/post").permitAll()
+                        .requestMatchers("/api/preguntas/ruta/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
