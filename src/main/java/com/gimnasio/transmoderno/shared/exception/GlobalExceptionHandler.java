@@ -1,5 +1,7 @@
 package com.gimnasio.transmoderno.shared.exception;
 
+import com.gimnasio.transmoderno.asistencia.domain.exception.AsistenciaYaRegistradaException;
+import com.gimnasio.transmoderno.asistencia.domain.exception.ParticipanteNoInscritoException;
 import com.gimnasio.transmoderno.auth.domain.exception.CredencialesInvalidasException;
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioNoEncontradoException;
 import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
@@ -117,6 +119,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleSesionNoActiva(
             SesionNoActivaException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    // ASISTENCIA
+
+    @ExceptionHandler(AsistenciaYaRegistradaException.class)
+    public ResponseEntity<Map<String, String>> handleAsistenciaYaRegistrada(
+            AsistenciaYaRegistradaException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipanteNoInscritoException.class)
+    public ResponseEntity<Map<String, String>> handleParticipanteNoInscrito(
+            ParticipanteNoInscritoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
