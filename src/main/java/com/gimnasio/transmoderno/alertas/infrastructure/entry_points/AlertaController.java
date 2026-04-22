@@ -93,7 +93,8 @@ public class AlertaController {
                 alerta.getRutaId(),
                 alerta.getNombreRuta(),
                 alerta.getUltimaAsistencia(),
-                alerta.getDiasSinAsistir()
+                alerta.getDiasSinAsistir(),
+                alerta.getNivelRiesgo()
         );
     }
 }

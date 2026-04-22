@@ -44,6 +44,15 @@ public class AlertaInasistenciaAdapter implements AlertaInasistenciaPort {
             long diasSinAsistir = ultimaAsistencia == null ? -1 :
                     java.time.temporal.ChronoUnit.DAYS.between(ultimaAsistencia, LocalDateTime.now());
 
+            String nivelRiesgo;
+            if (diasSinAsistir == -1 || diasSinAsistir >= 21) {
+                nivelRiesgo = "ALTO";
+            } else if (diasSinAsistir >= 14) {
+                nivelRiesgo = "MODERADO";
+            } else {
+                nivelRiesgo = "LEVE";
+            }
+
             return AlertaInasistencia.builder()
                     .participanteId((Long) row[0])
                     .numeroIdentificacion((String) row[1])
@@ -52,6 +61,7 @@ public class AlertaInasistenciaAdapter implements AlertaInasistenciaPort {
                     .nombreRuta((String) row[4])
                     .ultimaAsistencia(ultimaAsistencia)
                     .diasSinAsistir(diasSinAsistir)
+                    .nivelRiesgo(nivelRiesgo)
                     .build();
         }).collect(Collectors.toList());
     }

@@ -3,6 +3,8 @@ package com.gimnasio.transmoderno.inscripciones.infrastructure.entry_points;
 import com.gimnasio.transmoderno.inscripciones.domain.model.Inscripcion;
 import com.gimnasio.transmoderno.inscripciones.domain.usecase.*;
 import com.gimnasio.transmoderno.inscripciones.infrastructure.entry_points.dto.*;
+import com.gimnasio.transmoderno.participantes.domain.model.port.ParticipanteRepository;
+import com.gimnasio.transmoderno.rutas.domain.model.port.RutaRepository;
 import com.gimnasio.transmoderno.shared.dto.PaginaResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,6 +26,11 @@ public class InscripcionController {
     private final ObtenerInscripcionesUseCase obtenerInscripcionesUseCase;
     private final ObtenerInscripcionesPorParticipanteUseCase obtenerInscripcionesPorParticipanteUseCase;
     private final FinalizarInscripcionUseCase finalizarInscripcionUseCase;
+    private final CancelarInscripcionUseCase cancelarInscripcionUseCase;
+    private final DesactivarInscripcionesPorParticipanteUseCase desactivarInscripcionesPorParticipanteUseCase;
+    private final CerrarSemestreUseCase cerrarSemestreUseCase;
+    private final ParticipanteRepository participanteRepository;
+    private final RutaRepository rutaRepository;
 
     @PostMapping
     public ResponseEntity<InscripcionResponse> inscribir(
@@ -72,11 +80,52 @@ public class InscripcionController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{id}/cancelar")
+    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
+        cancelarInscripcionUseCase.ejecutar(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/participante/{participanteId}/desactivar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> desactivarPorParticipante(@PathVariable Long participanteId) {
+        desactivarInscripcionesPorParticipanteUseCase.ejecutar(participanteId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cerrar-semestre")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Object>> cerrarSemestre() {
+        int total = cerrarSemestreUseCase.ejecutar();
+        return ResponseEntity.ok(Map.of(
+                "mensaje", "Semestre cerrado exitosamente",
+                "inscripcionesFinalizadas", total
+        ));
+    }
+
     private InscripcionResponse toResponse(Inscripcion inscripcion) {
+        String nombreParticipante = participanteRepository
+                .findById(inscripcion.getParticipanteId())
+                .map(p -> p.getNombreCompleto())
+                .orElse("Desconocido");
+
+        String numeroIdentificacion = participanteRepository
+                .findById(inscripcion.getParticipanteId())
+                .map(p -> p.getNumeroIdentificacion())
+                .orElse("—");
+
+        String nombreRuta = rutaRepository
+                .findById(inscripcion.getRutaId())
+                .map(r -> r.getNombre())
+                .orElse("Desconocida");
+
         return new InscripcionResponse(
                 inscripcion.getId(),
                 inscripcion.getParticipanteId(),
+                nombreParticipante,
+                numeroIdentificacion,
                 inscripcion.getRutaId(),
+                nombreRuta,
                 inscripcion.getFechaInscripcion(),
                 inscripcion.getEstado()
         );

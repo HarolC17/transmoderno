@@ -24,6 +24,7 @@ public class SesionController {
     private final ObtenerSesionesPorRutaUseCase obtenerSesionesPorRutaUseCase;
     private final ObtenerSesionActivaUseCase obtenerSesionActivaUseCase;
     private final EliminarSesionUseCase eliminarSesionUseCase;
+    private final ObtenerSesionPorIdUseCase obtenerSesionPorIdUseCase;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
@@ -70,6 +71,13 @@ public class SesionController {
     @GetMapping("/activa/{rutaId}")
     public ResponseEntity<SesionResponse> obtenerSesionActiva(@PathVariable Long rutaId) {
         Sesion sesion = obtenerSesionActivaUseCase.ejecutar(rutaId);
+        return ResponseEntity.ok(toResponse(sesion));
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SesionResponse> obtenerPorId(@PathVariable Long id) {
+        Sesion sesion = obtenerSesionPorIdUseCase.ejecutar(id);
         return ResponseEntity.ok(toResponse(sesion));
     }
 

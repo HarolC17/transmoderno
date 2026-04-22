@@ -10,4 +10,6 @@ public interface ParticipanteRepository {
     Optional<Participante> findById(Long id);
     List<Participante> findAll(int page, int size);
     long count();
+    List<Participante> findByNombre(String nombre, int page, int size);
+    long countByNombre(String nombre);
 }

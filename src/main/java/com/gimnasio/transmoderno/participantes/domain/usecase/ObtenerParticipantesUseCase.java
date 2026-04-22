@@ -18,4 +18,17 @@ public class ObtenerParticipantesUseCase {
     public long contarTotal() {
         return participanteRepository.count();
     }
+
+    public List<Participante> ejecutarPorNombre(String nombre, int page, int size) {
+        return participanteRepository.findByNombre(nombre, page, size);
+    }
+
+    public long contarPorNombre(String nombre) {
+        return participanteRepository.countByNombre(nombre);
+    }
+
+    public List<Participante> ejecutarTodos() {
+        return participanteRepository.findAll(0, Integer.MAX_VALUE);
+    }
+
 }

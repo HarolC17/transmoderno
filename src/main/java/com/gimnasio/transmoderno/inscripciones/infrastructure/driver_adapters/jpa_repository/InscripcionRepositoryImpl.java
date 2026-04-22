@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.inscripciones.infrastructure.driver_adapters.jpa_repository;
 
+import com.gimnasio.transmoderno.inscripciones.domain.model.EstadoInscripcion;
 import com.gimnasio.transmoderno.inscripciones.domain.model.Inscripcion;
 import com.gimnasio.transmoderno.inscripciones.domain.model.port.InscripcionRepository;
 import com.gimnasio.transmoderno.inscripciones.infrastructure.mapper.InscripcionMapper;
@@ -59,5 +60,15 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
     public Optional<Inscripcion> findByParticipanteIdAndRutaId(Long participanteId, Long rutaId) {
         return inscripcionJpaRepository.findByParticipanteIdAndRutaId(participanteId, rutaId)
                 .map(inscripcionMapper::toDomain);
+    }
+
+    @Override
+    public long countByRutaId(Long rutaId) {
+        return inscripcionJpaRepository.countByRutaId(rutaId);
+    }
+
+    @Override
+    public long countByRutaIdAndEstado(Long rutaId, EstadoInscripcion estado) {
+        return inscripcionJpaRepository.countByRutaIdAndEstado(rutaId, estado);
     }
 }

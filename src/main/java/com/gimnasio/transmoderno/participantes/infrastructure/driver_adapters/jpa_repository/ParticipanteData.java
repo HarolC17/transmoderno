@@ -29,7 +29,7 @@ public class ParticipanteData {
     @Column(name = "programa_academico", nullable = false, length = 100)
     private String programaAcademico;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer semestre;
 
     @Column(name = "fecha_registro", nullable = false)
@@ -38,9 +38,22 @@ public class ParticipanteData {
     @Column(nullable = false)
     private Boolean activo;
 
+    @Column(name = "tipo_documento", length = 10)
+    private String tipoDocumento;
+
+    @Column(name = "sede", length = 100)
+    private String sede;
+
+    @Column(name = "telefono", length = 15)
+    private String telefono;
+
+    @Column(name = "estamento", length = 20)
+    private String estamento;
+
     @PrePersist
     public void prePersist() {
         this.fechaRegistro = LocalDateTime.now();
         this.activo = true;
+        if (this.estamento == null) this.estamento = "ESTUDIANTE";
     }
 }

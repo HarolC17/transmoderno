@@ -30,8 +30,18 @@ public class InscribirParticipanteUseCase {
             throw new RutaNoActivaException();
         }
 
-        inscripcionRepository.findByParticipanteIdAndRutaId(participante.getId(), rutaId)
-                .ifPresent(i -> { throw new ParticipanteYaInscritoException(); });
+        var inscripcionExistente = inscripcionRepository
+                .findByParticipanteIdAndRutaId(participante.getId(), rutaId);
+
+        if (inscripcionExistente.isPresent()) {
+            Inscripcion inscripcion = inscripcionExistente.get();
+            if (inscripcion.getEstado() == EstadoInscripcion.ACTIVA) {
+                throw new ParticipanteYaInscritoException();
+            }
+            // Reactivar inscripción INACTIVA o FINALIZADA
+            inscripcion.setEstado(EstadoInscripcion.ACTIVA);
+            return inscripcionRepository.save(inscripcion);
+        }
 
         Inscripcion inscripcion = Inscripcion.builder()
                 .participanteId(participante.getId())

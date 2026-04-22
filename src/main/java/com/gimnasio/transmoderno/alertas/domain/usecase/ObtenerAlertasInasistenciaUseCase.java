@@ -12,6 +12,6 @@ public class ObtenerAlertasInasistenciaUseCase {
     private final AlertaInasistenciaPort alertaInasistenciaPort;
 
     public List<AlertaInasistencia> ejecutar() {
-        return alertaInasistenciaPort.obtenerParticipantesSinAsistir(14);
+        return alertaInasistenciaPort.obtenerParticipantesSinAsistir(7);
     }
 }

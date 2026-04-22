@@ -52,4 +52,21 @@ public class ParticipanteRepositoryImpl implements ParticipanteRepository {
     public long count() {
         return participanteJpaRepository.count();
     }
+
+    @Override
+    public List<Participante> findByNombre(String nombre, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return participanteJpaRepository
+                .findByNombreCompletoContainingIgnoreCase(nombre, pageable)
+                .getContent()
+                .stream()
+                .map(participanteMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countByNombre(String nombre) {
+        return participanteJpaRepository
+                .countByNombreCompletoContainingIgnoreCase(nombre);
+    }
 }

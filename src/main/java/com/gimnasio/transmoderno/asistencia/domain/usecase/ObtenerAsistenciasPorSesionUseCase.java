@@ -18,4 +18,8 @@ public class ObtenerAsistenciasPorSesionUseCase {
     public long contarTotal(Long sesionId) {
         return registroAsistenciaRepository.countBySesionId(sesionId);
     }
+
+    public List<RegistroAsistencia> ejecutarTodos(Long sesionId) {
+        return registroAsistenciaRepository.findBySesionId(sesionId, 0, Integer.MAX_VALUE);
+    }
 }

@@ -36,4 +36,22 @@ public class InscripcionesUseCaseConfig {
             InscripcionRepository inscripcionRepository) {
         return new FinalizarInscripcionUseCase(inscripcionRepository);
     }
+
+    @Bean
+    public CancelarInscripcionUseCase cancelarInscripcionUseCase(
+            InscripcionRepository inscripcionRepository) {
+        return new CancelarInscripcionUseCase(inscripcionRepository);
+    }
+
+    @Bean
+    public DesactivarInscripcionesPorParticipanteUseCase desactivarInscripcionesPorParticipanteUseCase(
+            InscripcionRepository inscripcionRepository) {
+        return new DesactivarInscripcionesPorParticipanteUseCase(inscripcionRepository);
+    }
+
+    @Bean
+    public CerrarSemestreUseCase cerrarSemestreUseCase(
+            InscripcionRepository inscripcionRepository) {
+        return new CerrarSemestreUseCase(inscripcionRepository);
+    }
 }

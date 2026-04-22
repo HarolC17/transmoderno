@@ -29,4 +29,9 @@ public class SesionesUseCaseConfig {
     public EliminarSesionUseCase eliminarSesionUseCase(SesionRepository sesionRepository) {
         return new EliminarSesionUseCase(sesionRepository);
     }
+
+    @Bean
+    public ObtenerSesionPorIdUseCase obtenerSesionPorIdUseCase(SesionRepository sesionRepository) {
+        return new ObtenerSesionPorIdUseCase(sesionRepository);
+    }
 }

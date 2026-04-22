@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.participantes.application;
 
+import com.gimnasio.transmoderno.participantes.domain.model.port.EstudianteUcundinamarcaRepository;
 import com.gimnasio.transmoderno.participantes.domain.model.port.ParticipanteRepository;
 import com.gimnasio.transmoderno.participantes.domain.usecase.*;
 import org.springframework.context.annotation.Bean;
@@ -31,5 +32,10 @@ public class ParticipantesUseCaseConfig {
     @Bean
     public DesactivarParticipanteUseCase desactivarParticipanteUseCase(ParticipanteRepository participanteRepository) {
         return new DesactivarParticipanteUseCase(participanteRepository);
+    }
+
+    @Bean
+    public BuscarEstudianteUcundinamarcaUseCase buscarEstudianteUcundinamarcaUseCase(EstudianteUcundinamarcaRepository estudianteUcundinamarcaRepository) {
+        return new BuscarEstudianteUcundinamarcaUseCase(estudianteUcundinamarcaRepository);
     }
 }

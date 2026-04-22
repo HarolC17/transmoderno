@@ -10,7 +10,10 @@ import java.time.LocalDateTime;
 public class InscripcionResponse {
     private Long id;
     private Long participanteId;
+    private String nombreParticipante;
+    private String numeroIdentificacion;
     private Long rutaId;
+    private String nombreRuta;
     private LocalDateTime fechaInscripcion;
     private EstadoInscripcion estado;
 }

@@ -13,4 +13,5 @@ public interface SesionRepository {
     long countByRutaId(Long rutaId);
     Optional<Sesion> findSesionActiva(Long rutaId, LocalDate fecha, LocalTime horaActual);
     void deleteById(Long id);
+
 }

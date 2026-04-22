@@ -15,4 +15,8 @@ public class ParticipanteResponse {
     private Integer semestre;
     private LocalDateTime fechaRegistro;
     private Boolean activo;
+    private String tipoDocumento;
+    private String sede;
+    private String telefono;
+    private String estamento;
 }

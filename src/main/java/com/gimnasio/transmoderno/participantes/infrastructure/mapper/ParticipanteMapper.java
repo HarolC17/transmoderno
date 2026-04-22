@@ -17,6 +17,10 @@ public class ParticipanteMapper {
                 .semestre(data.getSemestre())
                 .fechaRegistro(data.getFechaRegistro())
                 .activo(data.getActivo())
+                .tipoDocumento(data.getTipoDocumento())
+                .sede(data.getSede())
+                .telefono(data.getTelefono())
+                .estamento(data.getEstamento())
                 .build();
     }
 
@@ -30,6 +34,10 @@ public class ParticipanteMapper {
                 .semestre(domain.getSemestre())
                 .fechaRegistro(domain.getFechaRegistro())
                 .activo(domain.getActivo())
+                .tipoDocumento(domain.getTipoDocumento())
+                .sede(domain.getSede())
+                .telefono(domain.getTelefono())
+                .estamento(domain.getEstamento())
                 .build();
     }
 }

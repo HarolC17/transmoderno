@@ -20,6 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
 
 import com.gimnasio.transmoderno.auth.domain.model.port.UsuarioRepository;
 
@@ -35,35 +38,50 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:5173",
+                            "http://192.168.10.12:5173"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/participantes").permitAll()
                         .requestMatchers("/api/participantes/identificacion/**").permitAll()
+                        .requestMatchers("/api/participantes/ucundinamarca/**").permitAll()
+                        .requestMatchers("/api/participantes/programas").permitAll()
                         .requestMatchers("/api/rutas/**").permitAll()
                         .requestMatchers("/api/inscripciones").permitAll()
+                        .requestMatchers("/api/inscripciones/**").permitAll()
                         .requestMatchers("/api/inscripciones/participante/**").permitAll()
                         .requestMatchers("/api/sesiones/activa/**").permitAll()
-                        .requestMatchers("/api/asistencia").permitAll()
-                        .requestMatchers("/api/asistencia/participante/**").permitAll()
+                        .requestMatchers("/api/sesiones/*").permitAll()
                         .requestMatchers("/api/fichas/pre").permitAll()
                         .requestMatchers("/api/fichas/post").permitAll()
                         .requestMatchers("/api/preguntas/ruta/**").permitAll()
                         .requestMatchers("/api/alertas/ayuda").permitAll()
+                        .requestMatchers("/api/asistencia").permitAll()
+                        .requestMatchers("/api/asistencia/participante/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"mensaje\": \"Acceso denegado\"}");
                         })
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }

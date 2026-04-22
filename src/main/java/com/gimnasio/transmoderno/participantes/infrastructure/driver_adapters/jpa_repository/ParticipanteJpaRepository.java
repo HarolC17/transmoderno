@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface ParticipanteJpaRepository extends JpaRepository<ParticipanteData, Long> {
     Optional<ParticipanteData> findByNumeroIdentificacion(String numeroIdentificacion);
     Page<ParticipanteData> findAll(Pageable pageable);
+    Page<ParticipanteData> findByNombreCompletoContainingIgnoreCase(String nombre, Pageable pageable);
+    long countByNombreCompletoContainingIgnoreCase(String nombre);
 }

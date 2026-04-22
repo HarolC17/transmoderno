@@ -14,4 +14,5 @@ public class AlertaInasistenciaResponse {
     private String nombreRuta;
     private LocalDateTime ultimaAsistencia;
     private Long diasSinAsistir;
+    private String nivelRiesgo;
 }
