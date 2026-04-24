@@ -16,9 +16,8 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
     private final EntityManager entityManager;
 
     @Override
-    public List<ReporteParticipantes> obtenerDistribucionPorPrograma(Long rutaId,
-                                                                     Integer semestre) {
-
+    public List<ReporteParticipantes> obtenerDistribucionPorPrograma(Long rutaId, Integer semestre,
+                                                                     String programaAcademico, String estamento) {
         StringBuilder jpql = new StringBuilder("""
                 SELECT p.programaAcademico, COUNT(p.id)
                 FROM ParticipanteData p
@@ -28,11 +27,15 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
         if (rutaId != null) jpql.append(" AND i.rutaId = :rutaId");
         if (semestre != null) jpql.append(" AND p.semestre = :semestre");
+        if (programaAcademico != null) jpql.append(" AND p.programaAcademico = :programaAcademico");
+        if (estamento != null) jpql.append(" AND p.estamento = :estamento");
         jpql.append(" GROUP BY p.programaAcademico ORDER BY COUNT(p.id) DESC");
 
         var query = entityManager.createQuery(jpql.toString());
         if (rutaId != null) query.setParameter("rutaId", rutaId);
         if (semestre != null) query.setParameter("semestre", semestre);
+        if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+        if (estamento != null) query.setParameter("estamento", estamento);
 
         List<Object[]> resultados = query.getResultList();
         List<ReporteParticipantes> reportes = new ArrayList<>();
@@ -44,8 +47,7 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
     @Override
     public List<ReporteParticipantes> obtenerDistribucionPorSemestre(Long rutaId,
-                                                                     String programaAcademico) {
-
+                                                                     String programaAcademico, String estamento) {
         StringBuilder jpql = new StringBuilder("""
                 SELECT CAST(p.semestre AS string), COUNT(p.id)
                 FROM ParticipanteData p
@@ -55,11 +57,13 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
         if (rutaId != null) jpql.append(" AND i.rutaId = :rutaId");
         if (programaAcademico != null) jpql.append(" AND p.programaAcademico = :programaAcademico");
+        if (estamento != null) jpql.append(" AND p.estamento = :estamento");
         jpql.append(" GROUP BY p.semestre ORDER BY p.semestre");
 
         var query = entityManager.createQuery(jpql.toString());
         if (rutaId != null) query.setParameter("rutaId", rutaId);
         if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+        if (estamento != null) query.setParameter("estamento", estamento);
 
         List<Object[]> resultados = query.getResultList();
         List<ReporteParticipantes> reportes = new ArrayList<>();
@@ -71,7 +75,6 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
     @Override
     public List<ReporteParticipantes> obtenerParticipantesPorRuta() {
-
         String jpql = """
                 SELECT r.nombre, COUNT(i.id)
                 FROM InscripcionData i

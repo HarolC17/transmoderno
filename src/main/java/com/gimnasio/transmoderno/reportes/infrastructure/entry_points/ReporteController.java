@@ -100,10 +100,12 @@ public class ReporteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
     public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorPrograma(
             @RequestParam(required = false) Long rutaId,
-            @RequestParam(required = false) Integer semestre) {
+            @RequestParam(required = false) Integer semestre,
+            @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
-                obtenerReporteParticipantesUseCase.porPrograma(rutaId, semestre)
+                obtenerReporteParticipantesUseCase.porPrograma(rutaId, semestre, programaAcademico, estamento)
                         .stream()
                         .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -114,10 +116,11 @@ public class ReporteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
     public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorSemestre(
             @RequestParam(required = false) Long rutaId,
-            @RequestParam(required = false) String programaAcademico) {
+            @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
-                obtenerReporteParticipantesUseCase.porSemestre(rutaId, programaAcademico)
+                obtenerReporteParticipantesUseCase.porSemestre(rutaId, programaAcademico, estamento)
                         .stream()
                         .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -163,6 +166,34 @@ public class ReporteController {
                                 r.getActivos(),
                                 r.getInactivos(),
                                 r.getTasaRetencion()
+                        ))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/asistencia/detalle")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteAsistenciaDetalleResponse>> detalleAsistencia(
+            @RequestParam(required = false) Long rutaId,
+            @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) Integer semestre,
+            @RequestParam(required = false) String estamento,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+
+        return ResponseEntity.ok(
+                obtenerReporteAsistenciaUseCase
+                        .detalle(rutaId, programaAcademico, semestre, estamento, fechaInicio, fechaFin)
+                        .stream()
+                        .map(r -> new ReporteAsistenciaDetalleResponse(
+                                r.getNombreCompleto(),
+                                r.getNumeroIdentificacion(),
+                                r.getProgramaAcademico(),
+                                r.getSemestre(),
+                                r.getEstamento(),
+                                r.getRuta(),
+                                r.getSesion(),
+                                r.getFecha()
                         ))
                         .collect(Collectors.toList())
         );

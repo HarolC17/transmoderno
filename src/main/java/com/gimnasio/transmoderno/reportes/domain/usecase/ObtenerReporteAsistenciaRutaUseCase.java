@@ -12,4 +12,5 @@ public class ObtenerReporteAsistenciaRutaUseCase {
     public ReporteAsistenciaRuta ejecutar(Long rutaId) {
         return reporteRepository.asistenciaPorRuta(rutaId);
     }
+
 }

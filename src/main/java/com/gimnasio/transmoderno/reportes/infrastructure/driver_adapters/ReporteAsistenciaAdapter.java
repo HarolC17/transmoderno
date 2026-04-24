@@ -1,6 +1,7 @@
 package com.gimnasio.transmoderno.reportes.infrastructure.driver_adapters;
 
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteAsistencia;
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteAsistenciaDetalle;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteTendencia;
 import com.gimnasio.transmoderno.reportes.domain.model.port.ReporteAsistenciaPort;
 import jakarta.persistence.EntityManager;
@@ -147,6 +148,53 @@ public class ReporteAsistenciaAdapter implements ReporteAsistenciaPort {
         List<ReporteTendencia> reportes = new ArrayList<>();
         for (Object[] row : resultados) {
             reportes.add(new ReporteTendencia((LocalDate) row[0], (Long) row[1]));
+        }
+        return reportes;
+    }
+
+    @Override
+    public List<ReporteAsistenciaDetalle> obtenerDetalleAsistencia(Long rutaId, String programaAcademico,
+                                                                   Integer semestre, String estamento,
+                                                                   LocalDate fechaInicio, LocalDate fechaFin) {
+        StringBuilder jpql = new StringBuilder("""
+            SELECT p.nombreCompleto, p.numeroIdentificacion, p.programaAcademico,
+                   p.semestre, p.estamento, r.nombre, s.nombre, s.fecha
+            FROM RegistroAsistenciaData a
+            JOIN SesionData s ON s.id = a.sesionId
+            JOIN RutaData r ON r.id = s.rutaId
+            JOIN ParticipanteData p ON p.id = a.participanteId
+            WHERE 1=1
+            """);
+
+        if (rutaId != null) jpql.append(" AND r.id = :rutaId");
+        if (programaAcademico != null) jpql.append(" AND p.programaAcademico = :programaAcademico");
+        if (semestre != null) jpql.append(" AND p.semestre = :semestre");
+        if (estamento != null) jpql.append(" AND p.estamento = :estamento");
+        if (fechaInicio != null) jpql.append(" AND s.fecha >= :fechaInicio");
+        if (fechaFin != null) jpql.append(" AND s.fecha <= :fechaFin");
+        jpql.append(" ORDER BY s.fecha DESC, r.nombre, p.nombreCompleto");
+
+        var query = entityManager.createQuery(jpql.toString());
+        if (rutaId != null) query.setParameter("rutaId", rutaId);
+        if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+        if (semestre != null) query.setParameter("semestre", semestre);
+        if (estamento != null) query.setParameter("estamento", estamento);
+        if (fechaInicio != null) query.setParameter("fechaInicio", fechaInicio);
+        if (fechaFin != null) query.setParameter("fechaFin", fechaFin);
+
+        List<Object[]> resultados = query.getResultList();
+        List<ReporteAsistenciaDetalle> reportes = new ArrayList<>();
+        for (Object[] row : resultados) {
+            reportes.add(new ReporteAsistenciaDetalle(
+                    (String) row[0],
+                    (String) row[1],
+                    (String) row[2],
+                    row[3] != null ? (Integer) row[3] : null,
+                    (String) row[4],
+                    (String) row[5],
+                    (String) row[6],
+                    (LocalDate) row[7]
+            ));
         }
         return reportes;
     }

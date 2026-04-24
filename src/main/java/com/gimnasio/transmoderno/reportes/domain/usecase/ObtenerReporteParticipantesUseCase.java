@@ -11,12 +11,16 @@ public class ObtenerReporteParticipantesUseCase {
 
     private final ReporteParticipantesPort reporteParticipantesPort;
 
-    public List<ReporteParticipantes> porPrograma(Long rutaId, Integer semestre) {
-        return reporteParticipantesPort.obtenerDistribucionPorPrograma(rutaId, semestre);
+    public List<ReporteParticipantes> porPrograma(Long rutaId, Integer semestre,
+                                                  String programaAcademico, String estamento) {
+        return reporteParticipantesPort.obtenerDistribucionPorPrograma(
+                rutaId, semestre, programaAcademico, estamento);
     }
 
-    public List<ReporteParticipantes> porSemestre(Long rutaId, String programaAcademico) {
-        return reporteParticipantesPort.obtenerDistribucionPorSemestre(rutaId, programaAcademico);
+    public List<ReporteParticipantes> porSemestre(Long rutaId, String programaAcademico,
+                                                  String estamento) {
+        return reporteParticipantesPort.obtenerDistribucionPorSemestre(
+                rutaId, programaAcademico, estamento);
     }
 
     public List<ReporteParticipantes> porRuta() {

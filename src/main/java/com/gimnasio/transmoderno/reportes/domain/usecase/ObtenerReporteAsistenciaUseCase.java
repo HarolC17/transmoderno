@@ -1,6 +1,7 @@
 package com.gimnasio.transmoderno.reportes.domain.usecase;
 
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteAsistencia;
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteAsistenciaDetalle;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteTendencia;
 import com.gimnasio.transmoderno.reportes.domain.model.port.ReporteAsistenciaPort;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,12 @@ public class ObtenerReporteAsistenciaUseCase {
     public List<ReporteTendencia> tendenciaSemanal(Long rutaId, LocalDate fechaInicio,
                                                    LocalDate fechaFin) {
         return reporteAsistenciaPort.obtenerTendenciaSemanal(rutaId, fechaInicio, fechaFin);
+    }
+
+    public List<ReporteAsistenciaDetalle> detalle(Long rutaId, String programaAcademico,
+                                                  Integer semestre, String estamento,
+                                                  LocalDate fechaInicio, LocalDate fechaFin) {
+        return reporteAsistenciaPort.obtenerDetalleAsistencia(
+                rutaId, programaAcademico, semestre, estamento, fechaInicio, fechaFin);
     }
 }
