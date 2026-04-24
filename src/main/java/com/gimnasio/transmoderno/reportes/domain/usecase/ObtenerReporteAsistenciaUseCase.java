@@ -14,21 +14,24 @@ public class ObtenerReporteAsistenciaUseCase {
     private final ReporteAsistenciaPort reporteAsistenciaPort;
 
     public List<ReporteAsistencia> porRuta(Long rutaId, String programaAcademico,
-                                           Integer semestre, LocalDate fechaInicio, LocalDate fechaFin) {
+                                           Integer semestre, LocalDate fechaInicio,
+                                           LocalDate fechaFin, String estamento) {
         return reporteAsistenciaPort.obtenerAsistenciaPorRuta(
-                rutaId, programaAcademico, semestre, fechaInicio, fechaFin);
+                rutaId, programaAcademico, semestre, fechaInicio, fechaFin, estamento);
     }
 
     public List<ReporteAsistencia> porPrograma(Long rutaId, Integer semestre,
-                                               LocalDate fechaInicio, LocalDate fechaFin) {
+                                               LocalDate fechaInicio, LocalDate fechaFin,
+                                               String estamento) {
         return reporteAsistenciaPort.obtenerAsistenciaPorPrograma(
-                rutaId, semestre, fechaInicio, fechaFin);
+                rutaId, semestre, fechaInicio, fechaFin, estamento);
     }
 
     public List<ReporteAsistencia> porSemestre(Long rutaId, String programaAcademico,
-                                               LocalDate fechaInicio, LocalDate fechaFin) {
+                                               LocalDate fechaInicio, LocalDate fechaFin,
+                                               String estamento) {
         return reporteAsistenciaPort.obtenerAsistenciaPorSemestre(
-                rutaId, programaAcademico, fechaInicio, fechaFin);
+                rutaId, programaAcademico, fechaInicio, fechaFin, estamento);
     }
 
     public List<ReporteTendencia> tendenciaSemanal(Long rutaId, LocalDate fechaInicio,

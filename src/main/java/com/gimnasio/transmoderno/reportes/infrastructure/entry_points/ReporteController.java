@@ -33,10 +33,12 @@ public class ReporteController {
             @RequestParam(required = false) String programaAcademico,
             @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
-                obtenerReporteAsistenciaUseCase.porRuta(rutaId, programaAcademico, semestre, fechaInicio, fechaFin)
+                obtenerReporteAsistenciaUseCase
+                        .porRuta(rutaId, programaAcademico, semestre, fechaInicio, fechaFin, estamento)
                         .stream()
                         .map(r -> new ReporteAsistenciaResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -49,10 +51,12 @@ public class ReporteController {
             @RequestParam(required = false) Long rutaId,
             @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
-                obtenerReporteAsistenciaUseCase.porPrograma(rutaId, semestre, fechaInicio, fechaFin)
+                obtenerReporteAsistenciaUseCase
+                        .porPrograma(rutaId, semestre, fechaInicio, fechaFin, estamento)
                         .stream()
                         .map(r -> new ReporteAsistenciaResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -65,10 +69,12 @@ public class ReporteController {
             @RequestParam(required = false) Long rutaId,
             @RequestParam(required = false) String programaAcademico,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
-                obtenerReporteAsistenciaUseCase.porSemestre(rutaId, programaAcademico, fechaInicio, fechaFin)
+                obtenerReporteAsistenciaUseCase
+                        .porSemestre(rutaId, programaAcademico, fechaInicio, fechaFin, estamento)
                         .stream()
                         .map(r -> new ReporteAsistenciaResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())

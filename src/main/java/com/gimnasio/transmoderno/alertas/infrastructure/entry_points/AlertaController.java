@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -66,12 +67,37 @@ public class AlertaController {
 
     @GetMapping("/inasistencia")
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
-    public ResponseEntity<List<AlertaInasistenciaResponse>> obtenerInasistencias() {
-        List<AlertaInasistenciaResponse> alertas = obtenerAlertasInasistenciaUseCase.ejecutar()
+    public ResponseEntity<PaginaResponse<AlertaInasistenciaResponse>> obtenerInasistencias(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String nivel,
+            @RequestParam(required = false) Long rutaId) {
+
+        List<AlertaInasistenciaResponse> alertas = obtenerAlertasInasistenciaUseCase
+                .ejecutar(page, size, nivel, rutaId)
                 .stream()
                 .map(this::toInasistenciaResponse)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(alertas);
+
+        long total = obtenerAlertasInasistenciaUseCase.contarTotal(nivel, rutaId);
+
+        PaginaResponse<AlertaInasistenciaResponse> respuesta = new PaginaResponse<>(
+                alertas, page,
+                (int) Math.ceil((double) total / size),
+                total, size
+        );
+
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @GetMapping("/inasistencia/resumen")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<Map<String, Long>> obtenerResumen() {
+        return ResponseEntity.ok(Map.of(
+                "ALTO", obtenerAlertasInasistenciaUseCase.contarPorNivel("ALTO"),
+                "MODERADO", obtenerAlertasInasistenciaUseCase.contarPorNivel("MODERADO"),
+                "LEVE", obtenerAlertasInasistenciaUseCase.contarPorNivel("LEVE")
+        ));
     }
 
     private SolicitudAyudaResponse toSolicitudResponse(SolicitudAyuda solicitud) {
@@ -90,10 +116,12 @@ public class AlertaController {
                 alerta.getParticipanteId(),
                 alerta.getNumeroIdentificacion(),
                 alerta.getNombreCompleto(),
+                alerta.getCorreoInstitucional(),
+                alerta.getTelefono(),
                 alerta.getRutaId(),
                 alerta.getNombreRuta(),
                 alerta.getUltimaAsistencia(),
-                alerta.getDiasSinAsistir(),
+                alerta.getSesionesSinAsistir(),
                 alerta.getNivelRiesgo()
         );
     }
