@@ -113,9 +113,12 @@ public class AsistenciaController {
     }
 
     private RegistroAsistenciaResponse toResponse(RegistroAsistencia registro) {
+        Optional<Participante> participante = participanteRepository.findById(registro.getParticipanteId());
         return new RegistroAsistenciaResponse(
                 registro.getId(),
                 registro.getParticipanteId(),
+                participante.map(Participante::getNumeroIdentificacion).orElse(""),
+                participante.map(Participante::getNombreCompleto).orElse(""),
                 registro.getSesionId(),
                 registro.getFechaHoraRegistro()
         );

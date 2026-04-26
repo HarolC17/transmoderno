@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public class RegistroAsistenciaResponse {
     private Long id;
     private Long participanteId;
+    private String numeroIdentificacion;
+    private String nombreCompleto;
     private Long sesionId;
     private LocalDateTime fechaHoraRegistro;
 }

@@ -36,7 +36,11 @@ public class SesionRepositoryImpl implements SesionRepository {
 
     @Override
     public List<Sesion> findByRutaId(Long rutaId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.desc("fecha"),
+                        org.springframework.data.domain.Sort.Order.desc("horaInicio")
+                ));
         return sesionJpaRepository.findByRutaId(rutaId, pageable)
                 .getContent()
                 .stream()

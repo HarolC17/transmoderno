@@ -13,6 +13,7 @@ import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteNoEn
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteYaExisteException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaYaExisteException;
+import com.gimnasio.transmoderno.sesiones.domain.exception.FechaSesionInvalidaException;
 import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoActivaException;
 import com.gimnasio.transmoderno.sesiones.domain.exception.SesionNoEncontradaException;
 import com.gimnasio.transmoderno.fichas.domain.exception.*;
@@ -121,6 +122,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleSesionNoActiva(
             SesionNoActivaException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FechaSesionInvalidaException.class)
+    public ResponseEntity<Map<String, String>> handleFechaSesionInvalida (
+            FechaSesionInvalidaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
