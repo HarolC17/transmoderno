@@ -198,4 +198,16 @@ public class ReporteController {
                         .collect(Collectors.toList())
         );
     }
+
+    @GetMapping("/inscripciones/motivos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteParticipantesResponse>> motivosCancelacion(
+            @RequestParam(required = false) Long rutaId) {
+        return ResponseEntity.ok(
+                obtenerReporteParticipantesUseCase.porMotivo(rutaId)
+                        .stream()
+                        .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
+                        .collect(Collectors.toList())
+        );
+    }
 }

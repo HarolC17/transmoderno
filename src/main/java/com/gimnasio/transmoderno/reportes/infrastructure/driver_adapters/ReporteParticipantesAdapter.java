@@ -92,4 +92,27 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
         }
         return reportes;
     }
+
+    @Override
+    public List<ReporteParticipantes> obtenerDistribucionPorMotivo(Long rutaId) {
+        StringBuilder jpql = new StringBuilder("""
+            SELECT i.motivo, COUNT(i.id)
+            FROM InscripcionData i
+            WHERE i.motivo IS NOT NULL
+            AND (i.estado = 'INACTIVA' OR i.estado = 'FINALIZADA')
+            """);
+
+        if (rutaId != null) jpql.append(" AND i.rutaId = :rutaId");
+        jpql.append(" GROUP BY i.motivo ORDER BY COUNT(i.id) DESC");
+
+        var query = entityManager.createQuery(jpql.toString());
+        if (rutaId != null) query.setParameter("rutaId", rutaId);
+
+        List<Object[]> resultados = query.getResultList();
+        List<ReporteParticipantes> reportes = new ArrayList<>();
+        for (Object[] row : resultados) {
+            reportes.add(new ReporteParticipantes((String) row[0], (Long) row[1]));
+        }
+        return reportes;
+    }
 }
