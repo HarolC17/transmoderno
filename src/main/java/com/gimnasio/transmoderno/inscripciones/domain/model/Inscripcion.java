@@ -14,4 +14,5 @@ public class Inscripcion {
     private Long rutaId;
     private LocalDateTime fechaInscripcion;
     private EstadoInscripcion estado;
+    private String motivo;
 }

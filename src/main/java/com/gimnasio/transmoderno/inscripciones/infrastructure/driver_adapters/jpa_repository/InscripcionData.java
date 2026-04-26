@@ -31,6 +31,9 @@ public class InscripcionData {
     @Column(nullable = false, length = 20)
     private EstadoInscripcion estado;
 
+    @Column(name = "motivo", length = 50)
+    private String motivo;
+
     @PrePersist
     public void prePersist() {
         this.fechaInscripcion = LocalDateTime.now();

@@ -11,11 +11,12 @@ public class CancelarInscripcionUseCase {
 
     private final InscripcionRepository inscripcionRepository;
 
-    public void ejecutar(Long id) {
+    public void ejecutar(Long id, String motivo) {
         Inscripcion inscripcion = inscripcionRepository.findById(id)
                 .orElseThrow(() -> new InscripcionNoEncontradaException(id.toString()));
 
         inscripcion.setEstado(EstadoInscripcion.INACTIVA);
+        inscripcion.setMotivo(motivo);
         inscripcionRepository.save(inscripcion);
     }
 }

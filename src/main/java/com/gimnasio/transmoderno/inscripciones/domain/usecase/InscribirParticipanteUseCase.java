@@ -38,8 +38,8 @@ public class InscribirParticipanteUseCase {
             if (inscripcion.getEstado() == EstadoInscripcion.ACTIVA) {
                 throw new ParticipanteYaInscritoException();
             }
-            // Reactivar inscripción INACTIVA o FINALIZADA
             inscripcion.setEstado(EstadoInscripcion.ACTIVA);
+            inscripcion.setMotivo(null);
             return inscripcionRepository.save(inscripcion);
         }
 

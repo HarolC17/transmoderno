@@ -16,4 +16,5 @@ public class InscripcionResponse {
     private String nombreRuta;
     private LocalDateTime fechaInscripcion;
     private EstadoInscripcion estado;
+    private String motivo;
 }

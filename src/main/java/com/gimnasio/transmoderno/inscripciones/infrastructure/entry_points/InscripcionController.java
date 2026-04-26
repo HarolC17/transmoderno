@@ -81,8 +81,10 @@ public class InscripcionController {
     }
 
     @PatchMapping("/{id}/cancelar")
-    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
-        cancelarInscripcionUseCase.ejecutar(id);
+    public ResponseEntity<Void> cancelar(
+            @PathVariable Long id,
+            @RequestBody CancelarInscripcionRequest request) {
+        cancelarInscripcionUseCase.ejecutar(id, request.getMotivo());
         return ResponseEntity.ok().build();
     }
 
@@ -127,7 +129,8 @@ public class InscripcionController {
                 inscripcion.getRutaId(),
                 nombreRuta,
                 inscripcion.getFechaInscripcion(),
-                inscripcion.getEstado()
+                inscripcion.getEstado(),
+                inscripcion.getMotivo()
         );
     }
 }

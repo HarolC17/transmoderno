@@ -36,7 +36,7 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
     @Override
     public List<Inscripcion> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return inscripcionJpaRepository.findAll(pageable)
+        return inscripcionJpaRepository.findAllOrdenado(pageable)
                 .getContent()
                 .stream()
                 .map(inscripcionMapper::toDomain)

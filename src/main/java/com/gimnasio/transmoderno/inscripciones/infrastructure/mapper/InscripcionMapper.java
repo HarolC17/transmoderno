@@ -14,6 +14,7 @@ public class InscripcionMapper {
                 .rutaId(data.getRutaId())
                 .fechaInscripcion(data.getFechaInscripcion())
                 .estado(data.getEstado())
+                .motivo(data.getMotivo())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class InscripcionMapper {
                 .rutaId(domain.getRutaId())
                 .fechaInscripcion(domain.getFechaInscripcion())
                 .estado(domain.getEstado())
+                .motivo(domain.getMotivo())
                 .build();
     }
 }
