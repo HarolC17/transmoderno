@@ -65,7 +65,7 @@ public class AlertaInasistenciaAdapter implements AlertaInasistenciaPort {
         String orderBy = "ORDER BY CASE " +
                 "WHEN " + SUBQUERY_SESIONES + " > 4 THEN 1 " +
                 "WHEN " + SUBQUERY_SESIONES + " >= 3 THEN 2 " +
-                "ELSE 3 END, p.nombre_completo";
+                "ELSE 3 END, r.id ASC, p.nombre_completo ASC";
 
         String sql = construirSQLBase(nivel, rutaId) + orderBy;
 
