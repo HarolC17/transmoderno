@@ -77,7 +77,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"mensaje\": \"Acceso denegado\"}");
                         })
@@ -92,7 +92,7 @@ public class SecurityConfig {
                 .map(usuario -> org.springframework.security.core.userdetails.User
                         .withUsername(usuario.getCorreo())
                         .password(usuario.getContrasena())
-                        .roles("ADMIN")
+                        .roles(usuario.getRol().name())
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + correo));
     }
