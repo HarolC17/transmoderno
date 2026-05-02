@@ -51,23 +51,40 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/participantes").permitAll()
-                        .requestMatchers("/api/participantes/identificacion/**").permitAll()
-                        .requestMatchers("/api/participantes/ucundinamarca/**").permitAll()
-                        .requestMatchers("/api/participantes/programas").permitAll()
-                        .requestMatchers("/api/rutas/**").permitAll()
-                        .requestMatchers("/api/inscripciones").permitAll()
-                        .requestMatchers("/api/inscripciones/**").permitAll()
-                        .requestMatchers("/api/inscripciones/participante/**").permitAll()
-                        .requestMatchers("/api/sesiones/activa/**").permitAll()
-                        .requestMatchers("/api/sesiones/*").permitAll()
-                        .requestMatchers("/api/fichas/pre").permitAll()
-                        .requestMatchers("/api/fichas/post").permitAll()
-                        .requestMatchers("/api/preguntas/ruta/**").permitAll()
-                        .requestMatchers("/api/alertas/ayuda").permitAll()
-                        .requestMatchers("/api/asistencia").permitAll()
-                        .requestMatchers("/api/asistencia/participante/**").permitAll()
+
+                        // Auth — solo login es público
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+
+                        // Participantes — registro y consulta pública
+                        .requestMatchers(HttpMethod.POST, "/api/participantes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/participantes/identificacion/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/participantes/ucundinamarca/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/participantes/programas").permitAll()
+
+                        // Rutas — catálogo público
+                        .requestMatchers(HttpMethod.GET, "/api/rutas/**").permitAll()
+
+                        // Inscripciones — solo lo que hace el estudiante
+                        .requestMatchers(HttpMethod.POST, "/api/inscripciones").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/inscripciones/participante/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/inscripciones/*/cancelar").permitAll()
+
+                        // Sesiones — solo consulta pública (QR y sesión activa)
+                        .requestMatchers(HttpMethod.GET, "/api/sesiones/activa/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/sesiones/*").permitAll()
+
+                        // Fichas — estudiante las diligencia sin token
+                        .requestMatchers(HttpMethod.POST, "/api/fichas/pre").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/fichas/post").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/preguntas/ruta/**").permitAll()
+
+                        // Alertas — solo levantar la mano es público
+                        .requestMatchers(HttpMethod.POST, "/api/alertas/ayuda").permitAll()
+
+                        // Asistencia — solo registro y consulta propia son públicos
+                        .requestMatchers(HttpMethod.POST, "/api/asistencia").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/asistencia/participante/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

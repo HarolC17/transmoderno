@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.fichas.infrastructure.driver_adapters.jpa_repository;
 
+import com.gimnasio.transmoderno.fichas.domain.exception.FichaPostNoEncontradaException;
 import com.gimnasio.transmoderno.fichas.domain.model.FichaPost;
 import com.gimnasio.transmoderno.fichas.domain.model.port.FichaPostRepository;
 import com.gimnasio.transmoderno.fichas.infrastructure.driver_adapters.jpa_repository.ficha_post.FichaPostData;
@@ -43,7 +44,10 @@ public class FichaPostRepositoryImpl implements FichaPostRepository {
             fichaPostJpaRepository.save(saved);
         }
 
-        return fichaPostMapper.toDomain(fichaPostJpaRepository.findById(saved.getId()).get());
+        return fichaPostMapper.toDomain(
+                fichaPostJpaRepository.findById(saved.getId())
+                        .orElseThrow(() -> new FichaPostNoEncontradaException(saved.getId().toString()))
+        );
     }
 
     @Override

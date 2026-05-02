@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.fichas.infrastructure.driver_adapters.jpa_repository;
 
+import com.gimnasio.transmoderno.fichas.domain.exception.FichaPreNoEncontradaException;
 import com.gimnasio.transmoderno.fichas.domain.model.FichaPre;
 import com.gimnasio.transmoderno.fichas.domain.model.port.FichaPreRepository;
 import com.gimnasio.transmoderno.fichas.infrastructure.driver_adapters.jpa_repository.ficha_pre.FichaPreData;
@@ -43,7 +44,10 @@ public class FichaPreRepositoryImpl implements FichaPreRepository {
             fichaPreJpaRepository.save(saved);
         }
 
-        return fichaPreMapper.toDomain(fichaPreJpaRepository.findById(saved.getId()).get());
+        return fichaPreMapper.toDomain(
+                fichaPreJpaRepository.findById(saved.getId())
+                        .orElseThrow(() -> new FichaPreNoEncontradaException(saved.getId().toString()))
+        );
     }
 
     @Override
