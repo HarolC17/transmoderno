@@ -24,13 +24,16 @@ public class PreguntaController {
     private final DesactivarPreguntaUseCase desactivarPreguntaUseCase;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PSICOLOGO')")
     public ResponseEntity<PreguntaResponse> crear(
             @Valid @RequestBody CrearPreguntaRequest request) {
         Pregunta pregunta = Pregunta.builder()
                 .rutaId(request.getRutaId())
                 .texto(request.getTexto())
                 .orden(request.getOrden())
+                .tipo(request.getTipo())
+                .opciones(request.getOpciones())
+                .tipFicha(request.getTipFicha())
                 .build();
         Pregunta resultado = crearPreguntaUseCase.ejecutar(pregunta);
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(resultado));
@@ -45,21 +48,35 @@ public class PreguntaController {
         return ResponseEntity.ok(preguntas);
     }
 
+    @GetMapping("/ruta/{rutaId}/ficha/{tipFicha}")
+    public ResponseEntity<List<PreguntaResponse>> obtenerPorRutaYFicha(
+            @PathVariable Long rutaId,
+            @PathVariable String tipFicha) {
+        List<PreguntaResponse> preguntas = obtenerPreguntasPorRutaUseCase.ejecutar(rutaId)
+                .stream()
+                .filter(p -> tipFicha.equalsIgnoreCase(p.getTipFicha()) && Boolean.TRUE.equals(p.getActiva()))
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(preguntas);
+    }
+
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PSICOLOGO')")
     public ResponseEntity<PreguntaResponse> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody ActualizarPreguntaRequest request) {
         Pregunta preguntaActualizada = Pregunta.builder()
                 .texto(request.getTexto())
                 .orden(request.getOrden())
+                .tipo(request.getTipo())
+                .opciones(request.getOpciones())
                 .build();
         Pregunta resultado = actualizarPreguntaUseCase.ejecutar(id, preguntaActualizada);
         return ResponseEntity.ok(toResponse(resultado));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PSICOLOGO')")
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
         desactivarPreguntaUseCase.ejecutar(id);
         return ResponseEntity.ok().build();
@@ -71,6 +88,9 @@ public class PreguntaController {
                 pregunta.getRutaId(),
                 pregunta.getTexto(),
                 pregunta.getOrden(),
+                pregunta.getTipo(),
+                pregunta.getOpciones(),
+                pregunta.getTipFicha(),
                 pregunta.getActiva()
         );
     }

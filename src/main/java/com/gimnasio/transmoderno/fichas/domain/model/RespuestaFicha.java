@@ -10,5 +10,5 @@ import lombok.*;
 public class RespuestaFicha {
     private Long id;
     private Long preguntaId;
-    private Integer valor;
+    private String valor;
 }

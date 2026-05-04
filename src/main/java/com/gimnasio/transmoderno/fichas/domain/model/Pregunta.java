@@ -13,4 +13,8 @@ public class Pregunta {
     private String texto;
     private Integer orden;
     private Boolean activa;
+    private String tipo;
+    private String opciones;
+    private String tipFicha;
+
 }

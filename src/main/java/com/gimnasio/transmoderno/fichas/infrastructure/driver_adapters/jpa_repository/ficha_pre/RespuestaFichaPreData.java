@@ -22,6 +22,6 @@ public class RespuestaFichaPreData {
     @Column(name = "pregunta_id", nullable = false)
     private Long preguntaId;
 
-    @Column(nullable = false)
-    private Integer valor;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String valor;
 }

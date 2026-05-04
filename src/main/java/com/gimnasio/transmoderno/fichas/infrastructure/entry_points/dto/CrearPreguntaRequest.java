@@ -17,4 +17,12 @@ public class CrearPreguntaRequest {
 
     @NotNull(message = "El orden es obligatorio")
     private Integer orden;
+
+    @NotBlank(message = "El tipo es obligatorio")
+    private String tipo;
+
+    private String opciones;
+
+    @NotBlank(message = "El tipo de ficha es obligatorio")
+    private String tipFicha;
 }

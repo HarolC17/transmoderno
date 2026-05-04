@@ -8,5 +8,5 @@ import lombok.Getter;
 public class RespuestaFichaResponse {
     private Long id;
     private Long preguntaId;
-    private Integer valor;
+    private String valor;
 }

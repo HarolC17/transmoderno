@@ -14,4 +14,7 @@ public class ActualizarPreguntaRequest {
 
     @NotNull(message = "El orden es obligatorio")
     private Integer orden;
+
+    private String tipo;
+    private String opciones;
 }

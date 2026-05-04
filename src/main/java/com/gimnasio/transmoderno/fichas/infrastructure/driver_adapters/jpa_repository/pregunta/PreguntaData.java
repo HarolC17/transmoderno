@@ -25,11 +25,20 @@ public class PreguntaData {
     @Column(nullable = false)
     private Integer orden;
 
+    @Column(nullable = false, length = 30)
+    private String tipo;
+
+    @Column(columnDefinition = "TEXT")
+    private String opciones;
+
+    @Column(name = "tip_ficha", nullable = false, length = 10)
+    private String tipFicha;
+
     @Column(nullable = false)
     private Boolean activa;
 
     @PrePersist
     public void prePersist() {
-        this.activa = true;
+        if (this.activa == null) this.activa = true;
     }
 }

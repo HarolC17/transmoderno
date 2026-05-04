@@ -10,5 +10,8 @@ public class PreguntaResponse {
     private Long rutaId;
     private String texto;
     private Integer orden;
+    private String tipo;
+    private String opciones;
+    private String tipFicha;
     private Boolean activa;
 }

@@ -13,6 +13,9 @@ public class PreguntaMapper {
                 .rutaId(data.getRutaId())
                 .texto(data.getTexto())
                 .orden(data.getOrden())
+                .tipo(data.getTipo())
+                .opciones(data.getOpciones())
+                .tipFicha(data.getTipFicha())
                 .activa(data.getActiva())
                 .build();
     }
@@ -23,6 +26,9 @@ public class PreguntaMapper {
                 .rutaId(domain.getRutaId())
                 .texto(domain.getTexto())
                 .orden(domain.getOrden())
+                .tipo(domain.getTipo())
+                .opciones(domain.getOpciones())
+                .tipFicha(domain.getTipFicha())
                 .activa(domain.getActiva())
                 .build();
     }
