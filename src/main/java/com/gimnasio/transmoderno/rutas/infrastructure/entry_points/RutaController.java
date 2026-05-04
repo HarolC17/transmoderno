@@ -24,6 +24,7 @@ public class RutaController {
     private final ActualizarRutaUseCase actualizarRutaUseCase;
     private final DesactivarRutaUseCase desactivarRutaUseCase;
     private final ReactivarRutaUseCase reactivarRutaUseCase;
+    private final HabilitarPostUseCase habilitarPostUseCase;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -71,15 +72,24 @@ public class RutaController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{id}/post")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> togglePost(
+            @PathVariable Long id,
+            @RequestParam Boolean habilitado) {
+        habilitarPostUseCase.ejecutar(id, habilitado);
+        return ResponseEntity.ok().build();
+    }
+
     private RutaResponse toResponse(Ruta ruta) {
         return new RutaResponse(
                 ruta.getId(),
                 ruta.getNombre(),
                 ruta.getDescripcion(),
-                ruta.getActiva()
+                ruta.getActiva(),
+                ruta.getPostHabilitado()
         );
     }
-
     @PatchMapping("/{id}/reactivar")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> reactivar(@PathVariable Long id) {

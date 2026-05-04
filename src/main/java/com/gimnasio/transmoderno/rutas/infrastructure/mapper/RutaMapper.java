@@ -13,6 +13,7 @@ public class RutaMapper {
                 .nombre(data.getNombre())
                 .descripcion(data.getDescripcion())
                 .activa(data.getActiva())
+                .postHabilitado(data.getPostHabilitado())
                 .build();
     }
 
@@ -22,6 +23,7 @@ public class RutaMapper {
                 .nombre(domain.getNombre())
                 .descripcion(domain.getDescripcion())
                 .activa(domain.getActiva())
+                .postHabilitado(domain.getPostHabilitado())
                 .build();
     }
 }

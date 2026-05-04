@@ -25,8 +25,12 @@ public class RutaData {
     @Column(nullable = false)
     private Boolean activa;
 
+    @Column(name = "post_habilitado", nullable = false)
+    private Boolean postHabilitado;
+
     @PrePersist
     public void prePersist() {
-        this.activa = true;
+        if (this.activa == null) this.activa = true;
+        if (this.postHabilitado == null) this.postHabilitado = false;
     }
 }

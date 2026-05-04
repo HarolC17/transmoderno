@@ -37,4 +37,9 @@ public class RutasUseCaseConfig {
     public ReactivarRutaUseCase reactivarRutaUseCase(RutaRepository rutaRepository) {
         return new ReactivarRutaUseCase(rutaRepository);
     }
+
+    @Bean
+    public HabilitarPostUseCase habilitarPostUseCase(RutaRepository rutaRepository) {
+        return new HabilitarPostUseCase(rutaRepository);
+    }
 }

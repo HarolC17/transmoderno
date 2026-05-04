@@ -12,4 +12,5 @@ public class Ruta {
     private String nombre;
     private String descripcion;
     private Boolean activa;
+    private Boolean postHabilitado;
 }

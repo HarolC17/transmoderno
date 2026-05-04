@@ -43,7 +43,7 @@ public class InscripcionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO', 'PSICOLOGO')")
     public ResponseEntity<PaginaResponse<InscripcionResponse>> obtenerTodas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
