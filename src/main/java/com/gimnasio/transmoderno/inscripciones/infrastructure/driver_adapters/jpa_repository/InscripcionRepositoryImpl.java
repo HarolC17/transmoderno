@@ -42,6 +42,15 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
                 .map(inscripcionMapper::toDomain)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<Inscripcion> findAllByRutaId(Long rutaId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inscripcionJpaRepository.findByRutaId(rutaId, pageable)
+                .getContent()
+                .stream()
+                .map(inscripcionMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public long count() {

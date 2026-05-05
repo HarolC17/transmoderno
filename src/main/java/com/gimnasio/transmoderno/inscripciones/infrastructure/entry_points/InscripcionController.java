@@ -46,10 +46,19 @@ public class InscripcionController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO', 'PSICOLOGO')")
     public ResponseEntity<PaginaResponse<InscripcionResponse>> obtenerTodas(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long rutaId) {
 
-        List<Inscripcion> inscripciones = obtenerInscripcionesUseCase.ejecutar(page, size);
-        long total = obtenerInscripcionesUseCase.contarTotal();
+        List<Inscripcion> inscripciones;
+        long total;
+
+        if (rutaId != null) {
+            inscripciones = obtenerInscripcionesUseCase.ejecutarPorRuta(rutaId, page, size);
+            total = obtenerInscripcionesUseCase.contarPorRuta(rutaId);
+        } else {
+            inscripciones = obtenerInscripcionesUseCase.ejecutar(page, size);
+            total = obtenerInscripcionesUseCase.contarTotal();
+        }
 
         PaginaResponse<InscripcionResponse> respuesta = new PaginaResponse<>(
                 inscripciones.stream().map(this::toResponse).collect(Collectors.toList()),

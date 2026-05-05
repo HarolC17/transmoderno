@@ -15,7 +15,15 @@ public class ObtenerInscripcionesUseCase {
         return inscripcionRepository.findAll(page, size);
     }
 
+    public List<Inscripcion> ejecutarPorRuta(Long rutaId, int page, int size) {
+        return inscripcionRepository.findAllByRutaId(rutaId, page, size);
+    }
+
     public long contarTotal() {
         return inscripcionRepository.count();
+    }
+
+    public long contarPorRuta(Long rutaId) {
+        return inscripcionRepository.countByRutaId(rutaId);
     }
 }

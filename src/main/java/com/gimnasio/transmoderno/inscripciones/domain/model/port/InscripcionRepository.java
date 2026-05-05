@@ -9,9 +9,10 @@ public interface InscripcionRepository {
     Inscripcion save(Inscripcion inscripcion);
     Optional<Inscripcion> findById(Long id);
     List<Inscripcion> findAll(int page, int size);
+    List<Inscripcion> findAllByRutaId(Long rutaId, int page, int size);
     long count();
+    long countByRutaId(Long rutaId);
     List<Inscripcion> findByParticipanteId(Long participanteId);
     Optional<Inscripcion> findByParticipanteIdAndRutaId(Long participanteId, Long rutaId);
-    long countByRutaId(Long rutaId);
     long countByRutaIdAndEstado(Long rutaId, EstadoInscripcion estado);
 }

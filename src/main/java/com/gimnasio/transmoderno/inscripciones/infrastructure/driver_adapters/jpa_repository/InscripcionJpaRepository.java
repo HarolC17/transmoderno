@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface InscripcionJpaRepository extends JpaRepository<InscripcionData, Long> {
     Page<InscripcionData> findAll(Pageable pageable);
+    Page<InscripcionData> findByRutaId(Long rutaId, Pageable pageable);
     List<InscripcionData> findByParticipanteId(Long participanteId);
     Optional<InscripcionData> findByParticipanteIdAndRutaId(Long participanteId, Long rutaId);
     long countByRutaId(Long rutaId);
@@ -18,5 +19,6 @@ public interface InscripcionJpaRepository extends JpaRepository<InscripcionData,
 
     @Query("SELECT i FROM InscripcionData i ORDER BY i.rutaId ASC, CASE i.estado WHEN 'ACTIVA' THEN 0 WHEN 'INACTIVA' THEN 1 WHEN 'FINALIZADA' THEN 2 END ASC")
     Page<InscripcionData> findAllOrdenado(Pageable pageable);
+
 
 }
