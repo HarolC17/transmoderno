@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ReporteFichas {
+    private Integer orden;
     private String pregunta;
     private Double promedioPre;
     private Double promedioPost;

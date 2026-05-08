@@ -149,7 +149,7 @@ public class ReporteController {
                 obtenerReporteFichasUseCase.comparativaPrePost(rutaId, programaAcademico)
                         .stream()
                         .map(r -> new ReporteFichasResponse(
-                                r.getPregunta(), r.getPromedioPre(), r.getPromedioPost()))
+                                r.getOrden(),r.getPregunta(), r.getPromedioPre(), r.getPromedioPost()))
                         .collect(Collectors.toList())
         );
     }

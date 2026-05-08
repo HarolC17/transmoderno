@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ReporteFichasResponse {
+    private Integer orden;
     private String pregunta;
     private Double promedioPre;
     private Double promedioPost;

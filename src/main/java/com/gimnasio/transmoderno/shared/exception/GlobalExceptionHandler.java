@@ -30,6 +30,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+
+
     //USUARIOS
 
     @ExceptionHandler(CredencialesInvalidasException.class)
@@ -224,7 +227,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneral(Exception ex) {
+        // TEMPORAL — quitar antes de sustentar
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("mensaje", "Error interno del servidor"));
+                .body(Map.of("mensaje", ex.getMessage() != null ? ex.getMessage() : "Error interno"));
     }
 }
