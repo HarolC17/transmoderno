@@ -15,4 +15,10 @@ public class SolicitudAyuda {
     private LocalDateTime fechaHora;
     private Boolean atendida;
     private LocalDateTime fechaAtencion;
+    // Datos enriquecidos del participante
+    private String nombreCompleto;
+    private String numeroIdentificacion;
+    private String programaAcademico;
+    private String correoInstitucional;
+    private String telefono;
 }

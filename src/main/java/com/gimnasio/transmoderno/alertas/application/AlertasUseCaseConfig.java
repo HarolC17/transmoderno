@@ -19,10 +19,10 @@ public class AlertasUseCaseConfig {
 
     @Bean
     public ObtenerSolicitudesAyudaUseCase obtenerSolicitudesAyudaUseCase(
-            SolicitudAyudaRepository solicitudAyudaRepository) {
-        return new ObtenerSolicitudesAyudaUseCase(solicitudAyudaRepository);
+            SolicitudAyudaRepository solicitudAyudaRepository,
+            ParticipanteRepository participanteRepository) {
+        return new ObtenerSolicitudesAyudaUseCase(solicitudAyudaRepository, participanteRepository);
     }
-
     @Bean
     public AtenderSolicitudAyudaUseCase atenderSolicitudAyudaUseCase(
             SolicitudAyudaRepository solicitudAyudaRepository) {

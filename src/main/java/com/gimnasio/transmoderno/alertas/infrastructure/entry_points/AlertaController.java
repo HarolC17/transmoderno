@@ -107,7 +107,12 @@ public class AlertaController {
                 solicitud.getAtendidaPor(),
                 solicitud.getFechaHora(),
                 solicitud.getAtendida(),
-                solicitud.getFechaAtencion()
+                solicitud.getFechaAtencion(),
+                solicitud.getNombreCompleto(),
+                solicitud.getNumeroIdentificacion(),
+                solicitud.getProgramaAcademico(),
+                solicitud.getCorreoInstitucional(),
+                solicitud.getTelefono()
         );
     }
 
