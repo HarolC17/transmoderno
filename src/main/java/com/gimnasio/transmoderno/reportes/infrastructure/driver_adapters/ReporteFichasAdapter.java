@@ -1,8 +1,11 @@
 package com.gimnasio.transmoderno.reportes.infrastructure.driver_adapters;
 
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteDistribucionPost;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteFichas;
 import com.gimnasio.transmoderno.reportes.domain.model.port.ReporteFichasPort;
 import jakarta.persistence.EntityManager;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -54,5 +57,60 @@ public class ReporteFichasAdapter implements ReporteFichasPort {
             ));
         }
         return reportes;
+    }
+
+    @Override
+    public List<ReporteDistribucionPost> obtenerDistribucionPost(Long rutaId, String programaAcademico) {
+
+        StringBuilder jpql = new StringBuilder("""
+            SELECT p.orden,
+                   p.texto,
+                   rpost.valor,
+                   COUNT(rpost.id)
+            FROM PreguntaData p
+            JOIN RespuestaFichaPostData rpost ON rpost.preguntaId = p.id
+            JOIN FichaPostData          fpost ON fpost.id          = rpost.fichaPostId
+            JOIN FichaPreData           fpre  ON fpre.id           = fpost.fichaPreId
+            JOIN InscripcionData        i     ON i.id              = fpre.inscripcionId
+            JOIN ParticipanteData       part  ON part.id           = i.participanteId
+            WHERE fpost.completada = true
+              AND p.tipFicha       = 'POST'
+              AND p.tipo           = 'SELECCION'
+              AND p.activa         = true
+              AND p.orden          BETWEEN 6 AND 33
+            """);
+
+        if (rutaId != null)            jpql.append(" AND i.rutaId = :rutaId");
+        if (programaAcademico != null) jpql.append(" AND part.programaAcademico = :programaAcademico");
+
+        jpql.append(" GROUP BY p.id, p.orden, p.texto, rpost.valor ORDER BY p.orden, rpost.valor");
+
+        var query = entityManager.createQuery(jpql.toString());
+        if (rutaId != null)            query.setParameter("rutaId", rutaId);
+        if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+
+        List<Object[]> rows = query.getResultList();
+
+        // Agrupar por pregunta
+        Map<Integer, ReporteDistribucionPost> mapa = new LinkedHashMap<>();
+        for (Object[] row : rows) {
+            Integer orden  = ((Number) row[0]).intValue();
+            String  texto  = (String)  row[1];
+            String  valor  = (String)  row[2];
+            Long    count  = ((Number) row[3]).longValue();
+
+            mapa.computeIfAbsent(orden, k -> ReporteDistribucionPost.builder()
+                    .orden(orden)
+                    .pregunta(texto)
+                    .distribucion(new LinkedHashMap<>())
+                    .total(0L)
+                    .build());
+
+            ReporteDistribucionPost rep = mapa.get(orden);
+            rep.getDistribucion().put(valor, count);
+            rep.setTotal(rep.getTotal() + count);
+        }
+
+        return new ArrayList<>(mapa.values());
     }
 }

@@ -210,4 +210,23 @@ public class ReporteController {
                         .collect(Collectors.toList())
         );
     }
+
+    @GetMapping("/fichas/distribucion-post")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PSICOLOGO')")
+    public ResponseEntity<List<ReporteDistribucionPostResponse>> distribucionPost(
+            @RequestParam(required = false) Long rutaId,
+            @RequestParam(required = false) String programaAcademico) {
+
+        return ResponseEntity.ok(
+                obtenerReporteFichasUseCase.distribucionPost(rutaId, programaAcademico)
+                        .stream()
+                        .map(r -> new ReporteDistribucionPostResponse(
+                                r.getOrden(),
+                                r.getPregunta(),
+                                r.getDistribucion(),
+                                r.getTotal()
+                        ))
+                        .collect(Collectors.toList())
+        );
+    }
 }

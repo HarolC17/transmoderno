@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.reportes.domain.usecase;
 
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteDistribucionPost;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteFichas;
 import com.gimnasio.transmoderno.reportes.domain.model.port.ReporteFichasPort;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +14,9 @@ public class ObtenerReporteFichasUseCase {
 
     public List<ReporteFichas> comparativaPrePost(Long rutaId, String programaAcademico) {
         return reporteFichasPort.obtenerComparativaPrePost(rutaId, programaAcademico);
+    }
+
+    public List<ReporteDistribucionPost> distribucionPost(Long rutaId, String programaAcademico) {
+        return reporteFichasPort.obtenerDistribucionPost(rutaId, programaAcademico);
     }
 }

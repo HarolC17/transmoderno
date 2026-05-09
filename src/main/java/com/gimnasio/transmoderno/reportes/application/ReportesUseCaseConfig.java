@@ -30,6 +30,7 @@ public class ReportesUseCaseConfig {
         return new ObtenerReporteFichasUseCase(reporteFichasPort);
     }
 
+
     @Bean
     public ObtenerRetencionUseCase obtenerRetencionUseCase(
             InscripcionRepository inscripcionRepository,
