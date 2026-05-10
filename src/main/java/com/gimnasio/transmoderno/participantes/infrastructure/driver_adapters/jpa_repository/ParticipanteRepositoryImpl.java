@@ -57,7 +57,7 @@ public class ParticipanteRepositoryImpl implements ParticipanteRepository {
     public List<Participante> findByNombre(String nombre, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return participanteJpaRepository
-                .findByNombreCompletoContainingIgnoreCase(nombre, pageable)
+                .findByNombreOrIdentificacion(nombre, pageable)
                 .getContent()
                 .stream()
                 .map(participanteMapper::toDomain)
@@ -67,6 +67,6 @@ public class ParticipanteRepositoryImpl implements ParticipanteRepository {
     @Override
     public long countByNombre(String nombre) {
         return participanteJpaRepository
-                .countByNombreCompletoContainingIgnoreCase(nombre);
+                .countByNombreOrIdentificacion(nombre);
     }
 }
