@@ -51,7 +51,9 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
     @Override
     public List<ReporteParticipantes> obtenerDistribucionPorSemestre(Long rutaId,
-                                                                     String programaAcademico, String estamento) {
+                                                                     String programaAcademico,
+                                                                     Integer semestre,
+                                                                     String estamento) {
         StringBuilder jpql = new StringBuilder("""
                 SELECT CAST(p.semestre AS string), COUNT(p.id)
                 FROM ParticipanteData p
@@ -61,12 +63,14 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
         if (rutaId != null)            jpql.append(" AND i.rutaId = :rutaId");
         if (programaAcademico != null) jpql.append(" AND p.programaAcademico = :programaAcademico");
+        if (semestre != null)          jpql.append(" AND p.semestre = :semestre");
         if (estamento != null)         jpql.append(" AND p.estamento = :estamento");
         jpql.append(" GROUP BY p.semestre ORDER BY p.semestre");
 
         var query = entityManager.createQuery(jpql.toString());
         if (rutaId != null)            query.setParameter("rutaId", rutaId);
         if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+        if (semestre != null)          query.setParameter("semestre", semestre);
         if (estamento != null)         query.setParameter("estamento", estamento);
 
         List<Object[]> resultados = query.getResultList();
@@ -78,17 +82,30 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
     }
 
     @Override
-    public List<ReporteParticipantes> obtenerParticipantesPorRuta() {
-        String jpql = """
-                SELECT r.nombre, COUNT(i.id)
+    public List<ReporteParticipantes> obtenerParticipantesPorRuta(Long rutaId,
+                                                                  String programaAcademico,
+                                                                  Integer semestre,
+                                                                  String estamento) {
+        StringBuilder jpql = new StringBuilder("""
+                SELECT r.nombre, COUNT(DISTINCT i.participanteId)
                 FROM InscripcionData i
                 JOIN RutaData r ON r.id = i.rutaId
+                JOIN ParticipanteData p ON p.id = i.participanteId
                 WHERE i.estado = 'ACTIVA'
-                GROUP BY r.nombre
-                ORDER BY COUNT(i.id) DESC
-                """;
+                """);
 
-        var query = entityManager.createQuery(jpql);
+        if (rutaId != null)            jpql.append(" AND i.rutaId = :rutaId");
+        if (programaAcademico != null) jpql.append(" AND p.programaAcademico = :programaAcademico");
+        if (semestre != null)          jpql.append(" AND p.semestre = :semestre");
+        if (estamento != null)         jpql.append(" AND p.estamento = :estamento");
+        jpql.append(" GROUP BY r.nombre ORDER BY COUNT(DISTINCT i.participanteId) DESC");
+
+        var query = entityManager.createQuery(jpql.toString());
+        if (rutaId != null)            query.setParameter("rutaId", rutaId);
+        if (programaAcademico != null) query.setParameter("programaAcademico", programaAcademico);
+        if (semestre != null)          query.setParameter("semestre", semestre);
+        if (estamento != null)         query.setParameter("estamento", estamento);
+
         List<Object[]> resultados = query.getResultList();
         List<ReporteParticipantes> reportes = new ArrayList<>();
         for (Object[] row : resultados) {
@@ -156,12 +173,10 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
 
     @Override
     public List<ReporteCobertura> obtenerCoberturaPorPrograma() {
-        // Query 1 — total GLOBAL de la institución (los 13.346)
         Long totalInstitucion = (Long) entityManager
                 .createQuery("SELECT COUNT(e.documento) FROM EstudianteUcundinamarcaData e")
                 .getSingleResult();
 
-        // Query 2 — matriculados por pensum con clave normalizada
         String jpqlMatriculados = """
                 SELECT e.pensum, COUNT(e.documento)
                 FROM EstudianteUcundinamarcaData e
@@ -176,7 +191,6 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
             matriculadosPorPrograma.merge(clave, (Long) row[1], Long::sum);
         }
 
-        // Query 3 — participantes activos por programa con clave normalizada
         String jpqlParticipantes = """
                 SELECT p.programaAcademico, COUNT(DISTINCT p.id)
                 FROM ParticipanteData p
@@ -186,7 +200,6 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
                 GROUP BY p.programaAcademico
                 """;
 
-        // clave normalizada → [nombreOriginal, count]
         Map<String, Object[]> participantesPorPrograma = new HashMap<>();
         List<Object[]> resParticipantes = entityManager.createQuery(jpqlParticipantes).getResultList();
         for (Object[] row : resParticipantes) {
@@ -195,7 +208,6 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
             participantesPorPrograma.put(clave, new Object[]{ nombreOriginal, (Long) row[1] });
         }
 
-        // Cruce con clave normalizada — guiones y espacios ya no causan mismatches
         List<ReporteCobertura> cobertura = new ArrayList<>();
         for (Map.Entry<String, Object[]> entry : participantesPorPrograma.entrySet()) {
             String clave          = entry.getKey();
@@ -213,22 +225,10 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
         return cobertura;
     }
 
-    /**
-     * Normaliza nombres de programas para el cruce entre tablas.
-     * Ejemplos que ahora coinciden:
-     *   "INGENIERIA DE SISTEMAS Y COMPUTACION 2020 - FUSAGASUGA"
-     *   "INGENIERIA DE SISTEMAS Y COMPUTACION 2020  FUSAGASUGA"
-     *   → "ingenieria de sistemas y computacion 2020 fusagasuga"
-     */
-// DESPUÉS — agrega este import al inicio del archivo:
-// import java.text.Normalizer;
-
     private String normalizar(String texto) {
         if (texto == null) return "";
-        // 1. Descomponer acentos (á → a + ́) y eliminarlos
         String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-        // 2. Quitar guion, colapsar espacios, minúsculas
         return sinAcentos
                 .toLowerCase()
                 .trim()

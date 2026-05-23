@@ -1,9 +1,6 @@
 package com.gimnasio.transmoderno.reportes.infrastructure.entry_points;
 
-import com.gimnasio.transmoderno.reportes.domain.model.ReporteAsistencia;
-import com.gimnasio.transmoderno.reportes.domain.model.ReporteFichas;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteParticipantes;
-import com.gimnasio.transmoderno.reportes.domain.model.ReporteTendencia;
 import com.gimnasio.transmoderno.reportes.domain.usecase.*;
 import com.gimnasio.transmoderno.reportes.infrastructure.entry_points.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +46,7 @@ public class ReporteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
     public ResponseEntity<List<ReporteAsistenciaResponse>> asistenciaPorPrograma(
             @RequestParam(required = false) Long rutaId,
+            @RequestParam(required = false) String programaAcademico,
             @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
@@ -56,7 +54,7 @@ public class ReporteController {
 
         return ResponseEntity.ok(
                 obtenerReporteAsistenciaUseCase
-                        .porPrograma(rutaId, semestre, fechaInicio, fechaFin, estamento)
+                        .porPrograma(rutaId, programaAcademico, semestre, fechaInicio, fechaFin, estamento)
                         .stream()
                         .map(r -> new ReporteAsistenciaResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -68,13 +66,14 @@ public class ReporteController {
     public ResponseEntity<List<ReporteAsistenciaResponse>> asistenciaPorSemestre(
             @RequestParam(required = false) Long rutaId,
             @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
             @RequestParam(required = false) String estamento) {
 
         return ResponseEntity.ok(
                 obtenerReporteAsistenciaUseCase
-                        .porSemestre(rutaId, programaAcademico, fechaInicio, fechaFin, estamento)
+                        .porSemestre(rutaId, programaAcademico, semestre, fechaInicio, fechaFin, estamento)
                         .stream()
                         .map(r -> new ReporteAsistenciaResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -96,6 +95,23 @@ public class ReporteController {
         );
     }
 
+// En ReporteController.java reemplaza SOLO estos 3 métodos:
+
+    @GetMapping("/participantes/ruta")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorRuta(
+            @RequestParam(required = false) Long rutaId,
+            @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) Integer semestre,
+            @RequestParam(required = false) String estamento) {
+        return ResponseEntity.ok(
+                obtenerReporteParticipantesUseCase.porRuta(rutaId, programaAcademico, semestre, estamento)
+                        .stream()
+                        .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
+                        .collect(Collectors.toList())
+        );
+    }
+
     @GetMapping("/participantes/programa")
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
     public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorPrograma(
@@ -103,7 +119,6 @@ public class ReporteController {
             @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) String programaAcademico,
             @RequestParam(required = false) String estamento) {
-
         return ResponseEntity.ok(
                 obtenerReporteParticipantesUseCase.porPrograma(rutaId, semestre, programaAcademico, estamento)
                         .stream()
@@ -117,21 +132,10 @@ public class ReporteController {
     public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorSemestre(
             @RequestParam(required = false) Long rutaId,
             @RequestParam(required = false) String programaAcademico,
+            @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) String estamento) {
-
         return ResponseEntity.ok(
-                obtenerReporteParticipantesUseCase.porSemestre(rutaId, programaAcademico, estamento)
-                        .stream()
-                        .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    @GetMapping("/participantes/ruta")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
-    public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorRuta() {
-        return ResponseEntity.ok(
-                obtenerReporteParticipantesUseCase.porRuta()
+                obtenerReporteParticipantesUseCase.porSemestre(rutaId, programaAcademico, semestre, estamento)
                         .stream()
                         .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -146,23 +150,6 @@ public class ReporteController {
                 obtenerReporteParticipantesUseCase.porRecurrencia(rutaId)
                         .stream()
                         .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    @GetMapping("/cobertura")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
-    public ResponseEntity<List<ReporteCoberturaResponse>> cobertura() {
-        return ResponseEntity.ok(
-                obtenerReporteParticipantesUseCase.porCobertura()
-                        .stream()
-                        .map(r -> new ReporteCoberturaResponse(
-                                r.getPrograma(),
-                                r.getTotalMatriculados(),
-                                r.getTotalParticipantes(),
-                                r.getPorcentaje(),
-                                r.getTotalInstitucion()   // <-- nuevo campo
-                        ))
                         .collect(Collectors.toList())
         );
     }
@@ -189,12 +176,8 @@ public class ReporteController {
                 obtenerRetencionUseCase.ejecutar()
                         .stream()
                         .map(r -> new ReporteRetencionResponse(
-                                r.getRuta(),
-                                r.getTotalInscritos(),
-                                r.getActivos(),
-                                r.getInactivos(),
-                                r.getTasaRetencion()
-                        ))
+                                r.getRuta(), r.getTotalInscritos(),
+                                r.getActivos(), r.getInactivos(), r.getTasaRetencion()))
                         .collect(Collectors.toList())
         );
     }
@@ -214,15 +197,10 @@ public class ReporteController {
                         .detalle(rutaId, programaAcademico, semestre, estamento, fechaInicio, fechaFin)
                         .stream()
                         .map(r -> new ReporteAsistenciaDetalleResponse(
-                                r.getNombreCompleto(),
-                                r.getNumeroIdentificacion(),
-                                r.getProgramaAcademico(),
-                                r.getSemestre(),
-                                r.getEstamento(),
-                                r.getRuta(),
-                                r.getSesion(),
-                                r.getFecha()
-                        ))
+                                r.getNombreCompleto(), r.getNumeroIdentificacion(),
+                                r.getCorreoInstitucional(), r.getProgramaAcademico(),
+                                r.getSemestre(), r.getEstamento(),
+                                r.getRuta(), r.getSesion(), r.getFecha()))
                         .collect(Collectors.toList())
         );
     }
@@ -249,11 +227,22 @@ public class ReporteController {
                 obtenerReporteFichasUseCase.distribucionPost(rutaId, programaAcademico)
                         .stream()
                         .map(r -> new ReporteDistribucionPostResponse(
-                                r.getOrden(),
-                                r.getPregunta(),
-                                r.getDistribucion(),
-                                r.getTotal()
-                        ))
+                                r.getOrden(), r.getPregunta(),
+                                r.getDistribucion(), r.getTotal()))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/cobertura")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteCoberturaResponse>> cobertura() {
+        return ResponseEntity.ok(
+                obtenerReporteParticipantesUseCase.porCobertura()
+                        .stream()
+                        .map(r -> new ReporteCoberturaResponse(
+                                r.getPrograma(), r.getTotalMatriculados(),
+                                r.getTotalParticipantes(), r.getPorcentaje(),
+                                r.getTotalInstitucion()))
                         .collect(Collectors.toList())
         );
     }

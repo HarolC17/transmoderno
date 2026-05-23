@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class ReporteAsistenciaDetalle {
     private String nombreCompleto;
     private String numeroIdentificacion;
+    private String correoInstitucional;
     private String programaAcademico;
     private Integer semestre;
     private String estamento;

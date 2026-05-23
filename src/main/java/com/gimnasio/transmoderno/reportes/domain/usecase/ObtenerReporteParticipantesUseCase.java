@@ -18,14 +18,18 @@ public class ObtenerReporteParticipantesUseCase {
                 rutaId, semestre, programaAcademico, estamento);
     }
 
+    // semestre agregado como filtro
     public List<ReporteParticipantes> porSemestre(Long rutaId, String programaAcademico,
-                                                  String estamento) {
+                                                  Integer semestre, String estamento) {
         return reporteParticipantesPort.obtenerDistribucionPorSemestre(
-                rutaId, programaAcademico, estamento);
+                rutaId, programaAcademico, semestre, estamento);
     }
 
-    public List<ReporteParticipantes> porRuta() {
-        return reporteParticipantesPort.obtenerParticipantesPorRuta();
+    // ahora acepta filtros
+    public List<ReporteParticipantes> porRuta(Long rutaId, String programaAcademico,
+                                              Integer semestre, String estamento) {
+        return reporteParticipantesPort.obtenerParticipantesPorRuta(
+                rutaId, programaAcademico, semestre, estamento);
     }
 
     public List<ReporteParticipantes> porMotivo(Long rutaId) {
