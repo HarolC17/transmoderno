@@ -150,6 +150,23 @@ public class ReporteController {
         );
     }
 
+    @GetMapping("/cobertura")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteCoberturaResponse>> cobertura() {
+        return ResponseEntity.ok(
+                obtenerReporteParticipantesUseCase.porCobertura()
+                        .stream()
+                        .map(r -> new ReporteCoberturaResponse(
+                                r.getPrograma(),
+                                r.getTotalMatriculados(),
+                                r.getTotalParticipantes(),
+                                r.getPorcentaje(),
+                                r.getTotalInstitucion()   // <-- nuevo campo
+                        ))
+                        .collect(Collectors.toList())
+        );
+    }
+
     @GetMapping("/fichas/comparativa")
     @PreAuthorize("hasAnyRole('ADMIN', 'PSICOLOGO')")
     public ResponseEntity<List<ReporteFichasResponse>> comparativaPrePost(

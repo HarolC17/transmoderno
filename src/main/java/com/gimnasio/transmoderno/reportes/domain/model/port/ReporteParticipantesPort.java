@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.reportes.domain.model.port;
 
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteCobertura;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteParticipantes;
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface ReporteParticipantesPort {
     List<ReporteParticipantes> obtenerParticipantesPorRuta();
     List<ReporteParticipantes> obtenerDistribucionPorMotivo(Long rutaId);
     List<ReporteParticipantes> obtenerNivelRecurrencia(Long rutaId);
+    List<ReporteCobertura>     obtenerCoberturaPorPrograma();
 }

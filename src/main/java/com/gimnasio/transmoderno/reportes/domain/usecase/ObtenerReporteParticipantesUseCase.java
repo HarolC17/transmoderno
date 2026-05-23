@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.reportes.domain.usecase;
 
+import com.gimnasio.transmoderno.reportes.domain.model.ReporteCobertura;
 import com.gimnasio.transmoderno.reportes.domain.model.ReporteParticipantes;
 import com.gimnasio.transmoderno.reportes.domain.model.port.ReporteParticipantesPort;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,9 @@ public class ObtenerReporteParticipantesUseCase {
 
     public List<ReporteParticipantes> porRecurrencia(Long rutaId) {
         return reporteParticipantesPort.obtenerNivelRecurrencia(rutaId);
+    }
+
+    public List<ReporteCobertura> porCobertura() {
+        return reporteParticipantesPort.obtenerCoberturaPorPrograma();
     }
 }
