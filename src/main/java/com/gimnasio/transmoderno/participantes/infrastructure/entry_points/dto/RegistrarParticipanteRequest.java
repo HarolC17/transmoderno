@@ -9,9 +9,18 @@ import lombok.Setter;
 public class RegistrarParticipanteRequest {
 
     @NotBlank(message = "El número de identificación es obligatorio")
+    @Pattern(
+            regexp = "^[0-9]+$",
+            message = "La identificación solo puede contener dígitos"
+    )
     private String numeroIdentificacion;
 
     @NotBlank(message = "El nombre completo es obligatorio")
+    @Pattern(
+            regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$",
+            message = "El nombre solo puede contener letras y espacios, sin números ni caracteres especiales"
+    )
+    @Size(max = 150, message = "El nombre no puede superar los 150 caracteres")
     private String nombreCompleto;
 
     @NotBlank(message = "El correo institucional es obligatorio")
@@ -19,6 +28,7 @@ public class RegistrarParticipanteRequest {
     private String correoInstitucional;
 
     @NotBlank(message = "El programa académico es obligatorio")
+    @Size(max = 150, message = "El programa no puede superar los 150 caracteres")
     private String programaAcademico;
 
     @Min(value = 1, message = "El semestre mínimo es 1")
@@ -27,6 +37,14 @@ public class RegistrarParticipanteRequest {
 
     private String tipoDocumento;
     private String sede;
+
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Pattern(
+            regexp = "^[0-9]{7,15}$",
+            message = "El teléfono debe contener entre 7 y 15 dígitos"
+    )
     private String telefono;
+
+    @NotBlank(message = "El estamento es obligatorio")
     private String estamento;
 }

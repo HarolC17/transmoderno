@@ -9,6 +9,7 @@ import com.gimnasio.transmoderno.auth.domain.exception.UsuarioYaExisteException;
 import com.gimnasio.transmoderno.inscripciones.domain.exception.InscripcionNoEncontradaException;
 import com.gimnasio.transmoderno.inscripciones.domain.exception.ParticipanteYaInscritoException;
 import com.gimnasio.transmoderno.inscripciones.domain.exception.RutaNoActivaException;
+import com.gimnasio.transmoderno.participantes.domain.exception.EstudianteNoEncontradoException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteNoEncontradoException;
 import com.gimnasio.transmoderno.participantes.domain.exception.ParticipanteYaExisteException;
 import com.gimnasio.transmoderno.rutas.domain.exception.RutaNoEncontradaException;
@@ -68,6 +69,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParticipanteNoEncontradoException.class)
     public ResponseEntity<Map<String, String>> handleParticipanteNoEncontrado(
             ParticipanteNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(EstudianteNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleEstudianteNoEncontrado(
+            EstudianteNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("mensaje", ex.getMessage()));
     }
