@@ -115,4 +115,41 @@ public class ReporteParticipantesAdapter implements ReporteParticipantesPort {
         }
         return reportes;
     }
+
+    @Override
+    public List<ReporteParticipantes> obtenerNivelRecurrencia(Long rutaId) {
+        // Paso 1: contar sesiones asistidas por cada participante
+        StringBuilder jpql = new StringBuilder("""
+                SELECT ra.participanteId, COUNT(ra.id)
+                FROM RegistroAsistenciaData ra
+                JOIN InscripcionData i ON i.participanteId = ra.participanteId
+                WHERE i.estado = 'ACTIVA'
+                """);
+
+        if (rutaId != null) jpql.append(" AND i.rutaId = :rutaId");
+        jpql.append(" GROUP BY ra.participanteId");
+
+        var query = entityManager.createQuery(jpql.toString());
+        if (rutaId != null) query.setParameter("rutaId", rutaId);
+
+        List<Object[]> resultados = query.getResultList();
+
+        // Paso 2: clasificar en buckets en Java
+        long unica = 0, dos = 0, tresACuatro = 0, cincoMas = 0;
+        for (Object[] row : resultados) {
+            long sesiones = (Long) row[1];
+            if (sesiones == 1)       unica++;
+            else if (sesiones == 2)  dos++;
+            else if (sesiones <= 4)  tresACuatro++;
+            else                     cincoMas++;
+        }
+
+        // Paso 3: devolver solo categorías con participantes
+        List<ReporteParticipantes> reportes = new ArrayList<>();
+        if (unica > 0)       reportes.add(new ReporteParticipantes("1 sesión", unica));
+        if (dos > 0)         reportes.add(new ReporteParticipantes("2 sesiones", dos));
+        if (tresACuatro > 0) reportes.add(new ReporteParticipantes("3-4 sesiones", tresACuatro));
+        if (cincoMas > 0)    reportes.add(new ReporteParticipantes("5 o más", cincoMas));
+        return reportes;
+    }
 }

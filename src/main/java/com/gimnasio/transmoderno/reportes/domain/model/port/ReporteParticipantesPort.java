@@ -9,6 +9,6 @@ public interface ReporteParticipantesPort {
     List<ReporteParticipantes> obtenerDistribucionPorSemestre(Long rutaId, String programaAcademico,
                                                               String estamento);
     List<ReporteParticipantes> obtenerParticipantesPorRuta();
-
     List<ReporteParticipantes> obtenerDistribucionPorMotivo(Long rutaId);
+    List<ReporteParticipantes> obtenerNivelRecurrencia(Long rutaId);
 }

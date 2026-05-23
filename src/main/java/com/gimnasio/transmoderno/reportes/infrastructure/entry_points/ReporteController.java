@@ -130,9 +130,20 @@ public class ReporteController {
     @GetMapping("/participantes/ruta")
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
     public ResponseEntity<List<ReporteParticipantesResponse>> participantesPorRuta() {
-
         return ResponseEntity.ok(
                 obtenerReporteParticipantesUseCase.porRuta()
+                        .stream()
+                        .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/participantes/recurrencia")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO')")
+    public ResponseEntity<List<ReporteParticipantesResponse>> nivelRecurrencia(
+            @RequestParam(required = false) Long rutaId) {
+        return ResponseEntity.ok(
+                obtenerReporteParticipantesUseCase.porRecurrencia(rutaId)
                         .stream()
                         .map(r -> new ReporteParticipantesResponse(r.getEtiqueta(), r.getTotal()))
                         .collect(Collectors.toList())
@@ -149,7 +160,7 @@ public class ReporteController {
                 obtenerReporteFichasUseCase.comparativaPrePost(rutaId, programaAcademico)
                         .stream()
                         .map(r -> new ReporteFichasResponse(
-                                r.getOrden(),r.getPregunta(), r.getPromedioPre(), r.getPromedioPost()))
+                                r.getOrden(), r.getPregunta(), r.getPromedioPre(), r.getPromedioPost()))
                         .collect(Collectors.toList())
         );
     }

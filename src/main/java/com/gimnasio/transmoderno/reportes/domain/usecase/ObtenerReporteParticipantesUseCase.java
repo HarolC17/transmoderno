@@ -30,4 +30,8 @@ public class ObtenerReporteParticipantesUseCase {
     public List<ReporteParticipantes> porMotivo(Long rutaId) {
         return reporteParticipantesPort.obtenerDistribucionPorMotivo(rutaId);
     }
+
+    public List<ReporteParticipantes> porRecurrencia(Long rutaId) {
+        return reporteParticipantesPort.obtenerNivelRecurrencia(rutaId);
+    }
 }
