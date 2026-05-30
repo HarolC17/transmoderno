@@ -23,8 +23,7 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
     @Override
     public Inscripcion save(Inscripcion inscripcion) {
         InscripcionData data = inscripcionMapper.toData(inscripcion);
-        InscripcionData saved = inscripcionJpaRepository.save(data);
-        return inscripcionMapper.toDomain(saved);
+        return inscripcionMapper.toDomain(inscripcionJpaRepository.save(data));
     }
 
     @Override
@@ -37,17 +36,16 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
     public List<Inscripcion> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return inscripcionJpaRepository.findAllOrdenado(pageable)
-                .getContent()
-                .stream()
+                .getContent().stream()
                 .map(inscripcionMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
     @Override
     public List<Inscripcion> findAllByRutaId(Long rutaId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return inscripcionJpaRepository.findByRutaId(rutaId, pageable)
-                .getContent()
-                .stream()
+                .getContent().stream()
                 .map(inscripcionMapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -79,5 +77,21 @@ public class InscripcionRepositoryImpl implements InscripcionRepository {
     @Override
     public long countByRutaIdAndEstado(Long rutaId, EstadoInscripcion estado) {
         return inscripcionJpaRepository.countByRutaIdAndEstado(rutaId, estado);
+    }
+
+    // ── NUEVOS ────────────────────────────────────────────────────────────────
+
+    @Override
+    public List<Inscripcion> findByFiltros(Long rutaId, EstadoInscripcion estado, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inscripcionJpaRepository.findByFiltros(rutaId, estado, pageable)
+                .getContent().stream()
+                .map(inscripcionMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countByFiltros(Long rutaId, EstadoInscripcion estado) {
+        return inscripcionJpaRepository.countByFiltros(rutaId, estado);
     }
 }

@@ -1,5 +1,6 @@
 package com.gimnasio.transmoderno.inscripciones.infrastructure.entry_points;
 
+import com.gimnasio.transmoderno.inscripciones.domain.model.EstadoInscripcion;
 import com.gimnasio.transmoderno.inscripciones.domain.model.Inscripcion;
 import com.gimnasio.transmoderno.inscripciones.domain.usecase.*;
 import com.gimnasio.transmoderno.inscripciones.infrastructure.entry_points.dto.*;
@@ -47,18 +48,20 @@ public class InscripcionController {
     public ResponseEntity<PaginaResponse<InscripcionResponse>> obtenerTodas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Long rutaId) {
+            @RequestParam(required = false) Long rutaId,
+            @RequestParam(required = false) String estado) {   // ← NUEVO
 
-        List<Inscripcion> inscripciones;
-        long total;
-
-        if (rutaId != null) {
-            inscripciones = obtenerInscripcionesUseCase.ejecutarPorRuta(rutaId, page, size);
-            total = obtenerInscripcionesUseCase.contarPorRuta(rutaId);
-        } else {
-            inscripciones = obtenerInscripcionesUseCase.ejecutar(page, size);
-            total = obtenerInscripcionesUseCase.contarTotal();
+        // Convertir estado string → enum (null si viene "TODOS" o vacío)
+        EstadoInscripcion estadoFiltro = null;
+        if (estado != null && !estado.isBlank() && !estado.equalsIgnoreCase("TODOS")) {
+            estadoFiltro = EstadoInscripcion.valueOf(estado);
         }
+
+        List<Inscripcion> inscripciones = obtenerInscripcionesUseCase
+                .ejecutarConFiltros(rutaId, estadoFiltro, page, size);
+
+        long total = obtenerInscripcionesUseCase
+                .contarConFiltros(rutaId, estadoFiltro);
 
         PaginaResponse<InscripcionResponse> respuesta = new PaginaResponse<>(
                 inscripciones.stream().map(this::toResponse).collect(Collectors.toList()),
